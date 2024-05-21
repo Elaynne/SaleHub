@@ -4,7 +4,7 @@ using Domain.Repository.Interfaces;
 
 namespace Application.UseCases.Users.GetUser
 {
-    public class GetUserUseCase
+    public class GetUserUseCase : IGetUserUseCase
     {
         private readonly IUserRepository _userRepository;
 
@@ -15,7 +15,7 @@ namespace Application.UseCases.Users.GetUser
 
         public async Task<User> Handle(GetUserInput request, CancellationToken cancellationToken)
         {
-            return await _userRepository.GetUserByIdAsync(request.User.Id);
+            return await _userRepository.GetUserByIdAsync(request.Id);
         }
     }
 }

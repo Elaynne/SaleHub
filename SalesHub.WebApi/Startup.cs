@@ -1,6 +1,8 @@
 ﻿using Microsoft.OpenApi.Models;
 using SalesHub.WebApi.DependencyInjection;
 using Application.UseCases.Users.CreateUser;
+using Application.MappingProfiles;
+using SalesHub.WebApi.Middleware;
 
 namespace SalesHub.WebApi
 {
@@ -20,7 +22,7 @@ namespace SalesHub.WebApi
             {
                 config.RegisterServicesFromAssembly(typeof(CreateUserUseCase).Assembly);
             });
-
+            services.AddAutoMapper(typeof(AutomapperProfile));
             services.AddMemoryCache();
         }
 
@@ -36,7 +38,7 @@ namespace SalesHub.WebApi
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
-
+            app.UseMiddleware<CustomMiddlewareException>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

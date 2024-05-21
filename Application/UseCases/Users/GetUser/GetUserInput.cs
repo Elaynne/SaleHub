@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Application.UseCases.Users.GetUser
 {
-    public class GetUserInput : IRequest<int>
+    public class GetUserInput : IRequest<User>
     {
-        public User User { get; set; }
+        public Guid Id { get; set; }
     }
 }

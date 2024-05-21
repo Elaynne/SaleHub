@@ -1,4 +1,5 @@
 ﻿using Application.UseCases.Users.CreateUser;
+using Application.UseCases.Users.GetUser;
 using Domain.Repository.Interfaces;
 using Infrastructure.Repository.User;
 
@@ -9,6 +10,7 @@ namespace SalesHub.WebApi.DependencyInjection
         public static IServiceCollection AddUseCases(this IServiceCollection services)
         { 
             services.AddScoped<ICreateUserUseCase, CreateUserUseCase> ();
+            services.AddScoped<IGetUserUseCase, GetUserUseCase>();
             return services;
 
         }
