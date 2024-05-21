@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="UseCases\Users\NewFolder1\**" />
+    <Compile Remove="UseCases\Users\NewFolder2\**" />
+    <Compile Remove="UseCases\Users\NewFolder3\**" />
+    <EmbeddedResource Remove="UseCases\Users\NewFolder1\**" />
+    <EmbeddedResource Remove="UseCases\Users\NewFolder2\**" />
+    <EmbeddedResource Remove="UseCases\Users\NewFolder3\**" />
+    <None Remove="UseCases\Users\NewFolder1\**" />
+    <None Remove="UseCases\Users\NewFolder2\**" />
+    <None Remove="UseCases\Users\NewFolder3\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
