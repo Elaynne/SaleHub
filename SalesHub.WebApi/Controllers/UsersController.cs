@@ -4,12 +4,14 @@ using Application.UseCases.Users.GetUsers;
 using Application.UseCases.Users.UpdateUser;
 using Domain.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SalesHub.WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 //TO-DO apply authorization
 public class UsersController : ControllerBase
 {
@@ -24,6 +26,7 @@ public class UsersController : ControllerBase
     }
     //TO-DO apply User roles
     [HttpGet(Name = "Get all users")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
         var input = new GetUsersInput() { UserRole = Domain.Enums.UserRole.Admin };

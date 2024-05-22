@@ -36,9 +36,9 @@ public class UserRepository : IUserRepository
         }
         _memoryCache.Set(UsersCacheKey, users, TimeSpan.FromMinutes(15));
     }
-    public async Task<IEnumerable<Domain.Models.User>> GetAllUsersAsync()
+    public async Task<List<Domain.Models.User>> GetAllUsersAsync()
     {
-        if (_memoryCache.TryGetValue(UsersCacheKey, out IEnumerable<Domain.Models.User> cachedUsers))
+        if (_memoryCache.TryGetValue(UsersCacheKey, out List<Domain.Models.User> cachedUsers))
         {
             return cachedUsers;
         }

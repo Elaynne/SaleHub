@@ -1,4 +1,5 @@
-﻿using Application.UseCases.Users.CreateUser;
+﻿using Application.UseCases.Auth;
+using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
 using Application.UseCases.Users.GetUsers;
 using Application.UseCases.Users.UpdateUser;
@@ -15,6 +16,8 @@ namespace SalesHub.WebApi.DependencyInjection
             services.AddScoped<IGetUserUseCase, GetUserUseCase>();
             services.AddScoped<IGetUsersUseCase, GetUsersUseCase>();
             services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+
+            services.AddScoped<ILoginUseCase, LoginUseCase>();
             return services;
 
         }
