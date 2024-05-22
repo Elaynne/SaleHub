@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Domain.Enums
 {
-    public enum Role
+    public enum UserRole
     {
         [Description("Client")]
         Client = 0,

@@ -1,5 +1,4 @@
-﻿using Domain.Models;
-using Domain.Repository.Interfaces;
+﻿using Domain.Repository.Interfaces;
 using Infrastructure.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -7,7 +6,7 @@ namespace Infrastructure.Repository.User;
 public class UserRepository : IUserRepository
 {
     private readonly IMemoryCache _memoryCache;
-    private const string UserIdsCacheKey = "UserIds";
+    private const string UsersCacheKey = "UsersKey";
     public UserRepository(IMemoryCache memoryCache)
     {
         _memoryCache = memoryCache;
@@ -20,18 +19,30 @@ public class UserRepository : IUserRepository
         }
 
         _memoryCache.Set($"User_{userInput.Id}", userInput, TimeSpan.FromMinutes(5));
-       // _memoryCache.TryGetValue(UserIdsCacheKey,);
+       
+        UpdateCachedUsers(userInput);
+
         return userInput;
     }
-
-    public Task<IEnumerable<Domain.Models.User>> GetAllUsersAsync()
+    private void UpdateCachedUsers(Domain.Models.User userInput)
     {
-        throw new NotImplementedException();
-        //if (_memoryCache.get($"User_{user.Id}", out Domain.Models.User cachedUser))
-        //{
-        //    _memoryCache.Set($"User_{user.Id}", user, TimeSpan.FromMinutes(5));
-        //    return user;
-        //}
+        if (_memoryCache.TryGetValue(UsersCacheKey, out List<Domain.Models.User> users))
+        {
+            users.Add(userInput);
+        }
+        else
+        {
+            users = new List<Domain.Models.User>() { userInput };
+        }
+        _memoryCache.Set(UsersCacheKey, users, TimeSpan.FromMinutes(15));
+    }
+    public async Task<IEnumerable<Domain.Models.User>> GetAllUsersAsync()
+    {
+        if (_memoryCache.TryGetValue(UsersCacheKey, out IEnumerable<Domain.Models.User> cachedUsers))
+        {
+            return cachedUsers;
+        }
+        return new List<Domain.Models.User>();
     }
 
     public async Task<Domain.Models.User> GetUserByIdAsync(Guid id)
@@ -51,10 +62,5 @@ public class UserRepository : IUserRepository
             return user;
         }
         throw new NotFoundException($"Cannot update user data. User {user.Id} not found");
-    }
-
-    public Task<bool> DeleteUserAsync(Guid id)
-    {
-        throw new NotImplementedException();
     }
 }
