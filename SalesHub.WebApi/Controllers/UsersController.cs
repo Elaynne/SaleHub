@@ -1,5 +1,7 @@
 using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
+using Application.UseCases.Users.GetUsers;
+using Application.UseCases.Users.UpdateUser;
 using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -22,20 +24,13 @@ public class UsersController : ControllerBase
     }
     //TO-DO apply User roles
     [HttpGet(Name = "Get all users")]
-    public IEnumerable<User> Get()
+    public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
-        return Enumerable.Range(1, 5).Select(index => new User
-        {
-            Id = Guid.NewGuid(),
-            UserName = "",
-            Email = "",
-            Password = "",
-            Role = Domain.Enums.Role.Admin
-        })
-        .ToArray();
+        var input = new GetUsersInput() { UserRole = Domain.Enums.UserRole.Admin };
+        var users = await _mediator.Send(input).ConfigureAwait(false);
+        return Ok(users);
     } 
     
-    // GET: api/User/5
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUser(Guid id)
     {
@@ -53,6 +48,14 @@ public class UsersController : ControllerBase
     {
         var user = await _mediator.Send(input).ConfigureAwait(false);
 
-        return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
+        return CreatedAtAction(nameof(GetAll), new { id = user.Id }, user);
+    }
+
+    [HttpPut(Name = "UpdateUser")]
+    public async Task<ActionResult<User>> UpdateUser(UpdateUserInput input)
+    {
+        var user = await _mediator.Send(input).ConfigureAwait(false);
+
+        return CreatedAtAction(nameof(GetAll), new { id = user.Id }, user);
     }
 }

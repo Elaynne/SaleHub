@@ -9,6 +9,5 @@ namespace Domain.Repository.Interfaces
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> AddUserAsync(User user);
         Task<User> UpdateUserAsync(User user);
-        Task<bool> DeleteUserAsync(Guid id);
     }
 }
