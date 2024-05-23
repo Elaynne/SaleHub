@@ -6,13 +6,15 @@ using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SalesHub.WebApi.ActionFilterAtributes;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace SalesHub.WebApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Authorize]
-//TO-DO apply authorization
 public class UsersController : ControllerBase
 {
 
@@ -24,16 +26,46 @@ public class UsersController : ControllerBase
         _logger = logger;
         _mediator = mediator;
     }
-    //TO-DO apply User roles
-    [HttpGet(Name = "Get all users")]
-    [Authorize(Roles = "Admin")]
+    ////TO-DO apply User roles
+    //[HttpGet(Name = "GetAllUsers")]
+    //[Authorize(Roles = "Admin, Seller")]
+    //[RoleDiscoveryFilter]
+    //public async Task<ActionResult<IEnumerable<User>>> GetAll(string userRole, Guid? sellerId = null)
+    //{
+    //    var input = new GetUsersInput() { 
+    //        UserRole = (Domain.Enums.UserRole)Enum.Parse(typeof(Domain.Enums.UserRole), userRole),
+    //        SellerId = sellerId
+    //    };
+
+    //    var users = await _mediator.Send(input).ConfigureAwait(false);
+    //    return Ok(users);
+    //}
+
+    [HttpGet(Name = "GetAllUsers")]
+    [Authorize(Roles = "Admin, Seller")]
+   // [RoleDiscoveryFilter]
     public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
-        var input = new GetUsersInput() { UserRole = Domain.Enums.UserRole.Admin };
+        var userId = GetUserIdFromToken();
+        var input = new GetUsersInput()
+        {
+            SellerId = userId
+        };
+
         var users = await _mediator.Send(input).ConfigureAwait(false);
         return Ok(users);
-    } 
-    
+    }
+
+    private Guid GetUserIdFromToken()
+    {
+        var bearerToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(bearerToken) as JwtSecurityToken;
+
+        var userIdClaim = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+        return userIdClaim != null ? Guid.Parse(userIdClaim.Value) : Guid.Empty;
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUser(Guid id)
     {
@@ -46,7 +78,7 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost(Name = "CreateUser")]
+    [HttpPost(Name = "CreateUser")] 
     public async Task<ActionResult<User>> CreateUser(CreateUserInput input)
     {
         var user = await _mediator.Send(input).ConfigureAwait(false);

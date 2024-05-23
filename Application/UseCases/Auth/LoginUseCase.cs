@@ -11,7 +11,6 @@ namespace Application.UseCases.Auth
 {
     public class LoginUseCase : ILoginUseCase
     {
-        private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
@@ -19,7 +18,6 @@ namespace Application.UseCases.Auth
             IUserRepository userRepository,
             IConfiguration configuration)
         {
-            _mapper = mapper;
             _userRepository = userRepository;
             _configuration = configuration;
         }
@@ -27,13 +25,8 @@ namespace Application.UseCases.Auth
         public async Task<string?> Handle(LoginInput request, CancellationToken cancellationToken)
         {
             var userRole = await GetUserRole(request);
-            if (!string.IsNullOrWhiteSpace(userRole))
-            {
-                var token = GenerateJwtToken(request.Username, userRole);
-                return token;
-            }
 
-            return null;
+            return !string.IsNullOrWhiteSpace(userRole) ? GenerateJwtToken(request.Username, userRole) : null;
         }
 
         private async Task<string> GetUserRole(LoginInput login)

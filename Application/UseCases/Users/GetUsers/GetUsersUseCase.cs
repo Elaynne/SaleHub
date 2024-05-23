@@ -1,6 +1,8 @@
 ﻿
+using Domain.Enums;
 using Domain.Models;
 using Domain.Repository.Interfaces;
+using MediatR;
 
 namespace Application.UseCases.Users.GetUsers
 {
@@ -15,7 +17,18 @@ namespace Application.UseCases.Users.GetUsers
 
         public async Task<IEnumerable<User>> Handle(GetUsersInput request, CancellationToken cancellationToken)
         {
-            return await _userRepository.GetAllUsersAsync();
+            var allUsers = await _userRepository.GetAllUsersAsync();
+
+            if (request.SellerId is null)
+            {
+                return allUsers;
+            }
+            return GetCustomersBySeller(request.SellerId, allUsers);
+        }
+
+        private IEnumerable<User> GetCustomersBySeller(Guid? sellerId, List<User> users)
+        {
+            return users.Where(x => x.SellerId == sellerId).ToList();
         }
 
     }
