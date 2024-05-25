@@ -2,11 +2,12 @@ using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
 using Application.UseCases.Users.GetUsers;
 using Application.UseCases.Users.UpdateUser;
+using Domain.Enums;
+using Domain.Extensions;
 using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SalesHub.WebApi.ActionFilterAtributes;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -26,44 +27,34 @@ public class UsersController : ControllerBase
         _logger = logger;
         _mediator = mediator;
     }
-    ////TO-DO apply User roles
-    //[HttpGet(Name = "GetAllUsers")]
-    //[Authorize(Roles = "Admin, Seller")]
-    //[RoleDiscoveryFilter]
-    //public async Task<ActionResult<IEnumerable<User>>> GetAll(string userRole, Guid? sellerId = null)
-    //{
-    //    var input = new GetUsersInput() { 
-    //        UserRole = (Domain.Enums.UserRole)Enum.Parse(typeof(Domain.Enums.UserRole), userRole),
-    //        SellerId = sellerId
-    //    };
-
-    //    var users = await _mediator.Send(input).ConfigureAwait(false);
-    //    return Ok(users);
-    //}
 
     [HttpGet(Name = "GetAllUsers")]
     [Authorize(Roles = "Admin, Seller")]
    // [RoleDiscoveryFilter]
     public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
-        var userId = GetUserIdFromToken();
+        var user = GetUserFromToken();
         var input = new GetUsersInput()
         {
-            SellerId = userId
+            Role = user.Value.Role,
+            SellerId = user.Value.Id
         };
 
         var users = await _mediator.Send(input).ConfigureAwait(false);
         return Ok(users);
     }
 
-    private Guid GetUserIdFromToken()
+    private (UserRole Role, Guid? Id)? GetUserFromToken()
     {
         var bearerToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
         var handler = new JwtSecurityTokenHandler();
         var jsonToken = handler.ReadToken(bearerToken) as JwtSecurityToken;
 
-        var userIdClaim = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
-        return userIdClaim != null ? Guid.Parse(userIdClaim.Value) : Guid.Empty;
+        var userId = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value;
+        var userRole = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role).Value;
+        var role = userRole.ToEnum<UserRole>();
+
+        return !string.IsNullOrEmpty(userId) ? (role, Guid.Parse(userId)) : null;
     }
 
     [HttpGet("{id}")]
