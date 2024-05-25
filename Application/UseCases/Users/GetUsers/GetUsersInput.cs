@@ -6,6 +6,7 @@ namespace Application.UseCases.Users.GetUsers
 {
     public class GetUsersInput : IRequest<IEnumerable<User>>
     {
-        public UserRole UserRole { get; set; }
+        public UserRole Role { get; set; }
+        public Guid? SellerId { get; set; }
     }
 }

@@ -2,15 +2,20 @@ using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
 using Application.UseCases.Users.GetUsers;
 using Application.UseCases.Users.UpdateUser;
+using Domain.Enums;
+using Domain.Extensions;
 using Domain.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace SalesHub.WebApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-//TO-DO apply authorization
+[Route("api/[controller]")]
+[Authorize]
 public class UsersController : ControllerBase
 {
 
@@ -22,15 +27,36 @@ public class UsersController : ControllerBase
         _logger = logger;
         _mediator = mediator;
     }
-    //TO-DO apply User roles
-    [HttpGet(Name = "Get all users")]
+
+    [HttpGet(Name = "GetAllUsers")]
+    [Authorize(Roles = "Admin, Seller")]
+   // [RoleDiscoveryFilter]
     public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
-        var input = new GetUsersInput() { UserRole = Domain.Enums.UserRole.Admin };
+        var user = GetUserFromToken();
+        var input = new GetUsersInput()
+        {
+            Role = user.Value.Role,
+            SellerId = user.Value.Id
+        };
+
         var users = await _mediator.Send(input).ConfigureAwait(false);
         return Ok(users);
-    } 
-    
+    }
+
+    private (UserRole Role, Guid? Id)? GetUserFromToken()
+    {
+        var bearerToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(bearerToken) as JwtSecurityToken;
+
+        var userId = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value;
+        var userRole = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role).Value;
+        var role = userRole.ToEnum<UserRole>();
+
+        return !string.IsNullOrEmpty(userId) ? (role, Guid.Parse(userId)) : null;
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUser(Guid id)
     {
@@ -43,7 +69,7 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost(Name = "CreateUser")]
+    [HttpPost(Name = "CreateUser")] 
     public async Task<ActionResult<User>> CreateUser(CreateUserInput input)
     {
         var user = await _mediator.Send(input).ConfigureAwait(false);
