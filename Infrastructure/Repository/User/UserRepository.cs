@@ -12,7 +12,6 @@ public class UserRepository : IUserRepository
     public UserRepository(IMemoryCache memoryCache)
     {
         _memoryCache = memoryCache;
-        SetupMock();
     }
     public async Task<Domain.Models.User> AddUserAsync(Domain.Models.User userInput)
     {
@@ -75,42 +74,5 @@ public class UserRepository : IUserRepository
 
         return cachedUsers;
     }
-    private void SetupMock()
-    {
-        var mock = GetUsersMock();
-        foreach (var user in mock)
-        {
-            AddUserAsync(user);
-        }
-    }
-    private List<Domain.Models.User> GetUsersMock()
-    { 
-        return new List<Domain.Models.User>()
-        {
-            new Domain.Models.User() {
-                Id = new Guid("a17ad52f-8720-492e-af21-b08514ea3e48"),
-                UserName = "user-admin",
-                Email = "admin@gmail.com",
-                Password = "11111111",
-                Role = UserRole.Admin,
-                Active = true
-            },
-            new Domain.Models.User() {
-                Id = new Guid("a21025ba-8fe1-485d-832d-cc050778e17b"),
-                UserName = "user-seller",
-                Email = "seller@gmail.com",
-                Password = "22222222",
-                Role = UserRole.Seller,
-                Active = true
-            },
-            new Domain.Models.User() {
-                Id = new Guid("de4711ce-3fb2-4050-a483-936b364fd60f"),
-                UserName = "user-client",
-                Email = "client@gmail.com",
-                Password = "33333333",
-                Role = UserRole.Client,
-                Active = true
-            }
-        };
-    }
+   
 }

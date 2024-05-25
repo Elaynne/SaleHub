@@ -19,7 +19,7 @@ namespace Application.UseCases.Users.GetUsers
         {
             var allUsers = await _userRepository.GetAllUsersAsync();
 
-            if (request.SellerId is null)
+            if (request.Role == UserRole.Admin)
             {
                 return allUsers;
             }
