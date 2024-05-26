@@ -1,4 +1,5 @@
 ﻿
+using Domain.Enums;
 using Domain.Models;
 using Domain.Repository.Interfaces;
 
@@ -13,9 +14,16 @@ namespace Application.UseCases.Users.GetUser
             _userRepository = userRepository;
         }
 
-        public async Task<User> Handle(GetUserInput request, CancellationToken cancellationToken)
+        public async Task<User?> Handle(GetUserInput request, CancellationToken cancellationToken)
         {
-            return await _userRepository.GetUserByIdAsync(request.Id);
+            var user = await _userRepository.GetUserByIdAsync(request.Id);
+
+            return request.Role switch
+            {
+                UserRole.Admin => user,
+                UserRole.Seller => user.Role == UserRole.Client ? user : null,
+                _ => null
+            };
         }
     }
 }

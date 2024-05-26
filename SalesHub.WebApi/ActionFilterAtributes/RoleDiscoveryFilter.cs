@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Domain.Enums;
+using System.IdentityModel.Tokens.Jwt;
+using Domain.Extensions;
 
 namespace SalesHub.WebApi.ActionFilterAtributes
 {
@@ -11,11 +14,11 @@ namespace SalesHub.WebApi.ActionFilterAtributes
             var user = context.HttpContext.User;
             if (user.Identity != null && user.Identity.IsAuthenticated)
             {
-                var roleClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-                if (roleClaim != null)
+                var data = GetUserFromToken(context);
+                if (data != null)
                 {
-                    // Adicionar a role como argumento de ação
-                    context.ActionArguments["userRole"] = roleClaim.Value;
+                    context.ActionArguments["userRole"] = data.Value.Role;
+                    context.ActionArguments["userId"] = data.Value.Id;
                 }
                 else
                 {
@@ -29,5 +32,19 @@ namespace SalesHub.WebApi.ActionFilterAtributes
 
             base.OnActionExecuting(context);
         }
+
+        private (UserRole Role, Guid? Id)? GetUserFromToken(ActionExecutingContext context)
+        {
+            var bearerToken = context.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(bearerToken) as JwtSecurityToken;
+
+            var userId = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == "UserId").Value;
+            var userRole = jsonToken?.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role).Value;
+            var role = userRole.ToEnum<UserRole>();
+
+            return !string.IsNullOrEmpty(userId) ? (role, Guid.Parse(userId)) : null;
+        }
+
     }
 }

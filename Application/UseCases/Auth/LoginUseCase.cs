@@ -97,8 +97,7 @@ namespace Application.UseCases.Auth
                 Email = "client@gmail.com",
                 Password = "33333333",
                 Role = UserRole.Client,
-                Active = true,
-                SellerId = new Guid("a21025ba-8fe1-485d-832d-cc050778e17b")
+                Active = true
             }
         };
         }

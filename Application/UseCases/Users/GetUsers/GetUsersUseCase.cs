@@ -1,8 +1,6 @@
-﻿
-using Domain.Enums;
+﻿using Domain.Enums;
 using Domain.Models;
 using Domain.Repository.Interfaces;
-using MediatR;
 
 namespace Application.UseCases.Users.GetUsers
 {
@@ -19,17 +17,12 @@ namespace Application.UseCases.Users.GetUsers
         {
             var allUsers = await _userRepository.GetAllUsersAsync();
 
-            if (request.Role == UserRole.Admin)
+            return request.Role switch
             {
-                return allUsers;
-            }
-            return GetCustomersBySeller(request.SellerId, allUsers);
+                UserRole.Admin => allUsers,
+                UserRole.Seller => allUsers.Where(x => x.Role == UserRole.Client),
+                _ => new List<User>()
+            };
         }
-
-        private IEnumerable<User> GetCustomersBySeller(Guid? sellerId, List<User> users)
-        {
-            return users.Where(x => x.SellerId == sellerId).ToList();
-        }
-
     }
 }

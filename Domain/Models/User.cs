@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models;
 
-public class User : IValidatableObject
+public class User 
 {
     public Guid Id { get; set; }
 
@@ -19,14 +19,4 @@ public class User : IValidatableObject
     public UserRole Role { get; set; } // Admin, Seller, Client
 
     public bool Active { get; set; }
-
-    public Guid? SellerId { get; set; } // Nullable because it is required only for clients
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (Role == UserRole.Client && SellerId == null)
-        {
-            yield return new ValidationResult("SellerId is required for clients.", new[] { nameof(SellerId) });
-        }
-    }
 }
