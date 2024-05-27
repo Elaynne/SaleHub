@@ -46,7 +46,7 @@ namespace UnitTests.Application.UseCases.Users
         [Fact]
         public async Task Handle_ClientRole_ReturnsEmptyList()
         {
-            var request = new GetUsersInput { Role = UserRole.Client };
+            var request = new GetUsersInput { Role = UserRole.Client }; 
 
             var result = await _getUsersUseCase.Handle(request, CancellationToken.None);
 
