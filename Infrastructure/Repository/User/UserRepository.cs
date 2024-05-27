@@ -1,5 +1,4 @@
-﻿using Domain.Enums;
-using Domain.Repository.Interfaces;
+﻿using Domain.Repository.Interfaces;
 using Infrastructure.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
 

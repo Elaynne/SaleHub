@@ -9,7 +9,8 @@ namespace Application.MappingProfiles
         public AutomapperProfile()
         {
             CreateMap<CreateUserInput, User>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
+                .ForMember(dest => dest.Active, opt => opt.MapFrom(src => true));
         }
     }
 }

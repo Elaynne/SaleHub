@@ -28,7 +28,9 @@ namespace Application.UseCases.Auth
         {
             var user = await GetUser(request);
 
-            return (user.Value.Role is not null) ? GenerateJwtToken(request.Username, user.Value.Role, user.Value.Id) : null;
+                return (user is not null && user.Value.Role is not null) ? 
+                    GenerateJwtToken(request.Username, user.Value.Role, user.Value.Id) 
+                    : null;
         }
 
         private async Task<(string Role, string Id)?> GetUser(LoginInput login)
@@ -97,8 +99,7 @@ namespace Application.UseCases.Auth
                 Email = "client@gmail.com",
                 Password = "33333333",
                 Role = UserRole.Client,
-                Active = true,
-                SellerId = new Guid("a21025ba-8fe1-485d-832d-cc050778e17b")
+                Active = true
             }
         };
         }
