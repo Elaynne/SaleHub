@@ -59,13 +59,12 @@ public class UsersController : ControllerBase
     [HttpPost(Name = "CreateUser")]
     public async Task<ActionResult<User>> CreateUser(CreateUserInput input)
     {
-
         if (GetUserRoleFromContext() == UserRole.Seller && input.Role != UserRole.Client)
             return Forbid();
 
         var user = await _mediator.Send(input).ConfigureAwait(false);
 
-        return CreatedAtAction(nameof(GetAll), new { id = user.Id }, user);
+        return Ok(user);
     }
 
     [HttpPut(Name = "UpdateUser")]
@@ -76,9 +75,8 @@ public class UsersController : ControllerBase
 
         var user = await _mediator.Send(input).ConfigureAwait(false);
 
-        return CreatedAtAction(nameof(GetAll), new { id = user.Id }, user);
+        return Ok(user);
     }
-
     private UserRole GetUserRoleFromContext()
     {
         return (UserRole)HttpContext.Items["userRole"];

@@ -30,8 +30,4 @@
     <ProjectReference Include="..\SalesHub.WebApi\SalesHub.WebApi.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Infrastructure\Repository\User\" />
-  </ItemGroup>
-
 </Project>

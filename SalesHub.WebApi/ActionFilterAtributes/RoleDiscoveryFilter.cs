@@ -4,9 +4,11 @@ using System.Security.Claims;
 using Domain.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using Domain.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SalesHub.WebApi.ActionFilterAtributes
 {
+    [ExcludeFromCodeCoverage]
     public class RoleDiscoveryFilterAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)

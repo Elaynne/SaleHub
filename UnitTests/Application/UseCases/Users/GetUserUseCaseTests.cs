@@ -4,17 +4,19 @@ using Domain.Repository.Interfaces;
 using NSubstitute;
 using FluentAssertions;
 using Application.UseCases.Users.GetUser;
+using Microsoft.Extensions.Logging;
 
 namespace UnitTests.Application.UseCases.Users
 {
     public class GetUserUseCaseTests
     {
-        private IUserRepository _userRepository = Substitute.For<IUserRepository>();
+        private readonly IUserRepository _userRepository = Substitute.For<IUserRepository>();
         private GetUserUseCase _getUserUseCase;
-        private Guid _userId = Guid.NewGuid();
+        private readonly Guid _userId = Guid.NewGuid();
+        private readonly ILogger<GetUserUseCase> _logger = Substitute.For<ILogger<GetUserUseCase>>();
         public GetUserUseCaseTests()
         {
-            _getUserUseCase = new GetUserUseCase(_userRepository);
+            _getUserUseCase = new GetUserUseCase(_userRepository, _logger);
         }
         [Fact]
         public async Task Handle_AdminRole_ReturnsUser()
