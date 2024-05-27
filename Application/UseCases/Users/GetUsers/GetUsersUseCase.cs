@@ -20,9 +20,11 @@ namespace Application.UseCases.Users.GetUsers
             return request.Role switch
             {
                 UserRole.Admin => allUsers,
-                UserRole.Seller => allUsers.Where(x => x.Role == UserRole.Client),
+                UserRole.Seller => GetActiveClients(allUsers),
                 _ => new List<User>()
             };
         }
+        private IEnumerable<User> GetActiveClients(List<User> users) =>
+            users.Where(x => x.Role == UserRole.Client && x.Active == true);
     }
 }

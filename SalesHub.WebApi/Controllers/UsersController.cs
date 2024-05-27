@@ -28,12 +28,11 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet(Name = "GetAllUsers")]
-    public async Task<ActionResult<IEnumerable<User>>> GetAll(Guid userId, UserRole role)
+    public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
         var input = new GetUsersInput()
         {
-            UserId = userId,
-            Role = role
+            Role = GetUserRoleFromContext()
         };
 
         var users = await _mediator.Send(input).ConfigureAwait(false);
@@ -42,12 +41,12 @@ public class UsersController : ControllerBase
 
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(Guid userId, UserRole role)
+    public async Task<ActionResult<User>> GetUser(Guid id)
     {
         var input = new GetUserInput()
         { 
-            Id = userId,
-            Role = role
+            Id = id,
+            Role = GetUserRoleFromContext()
         };
         var user = await _mediator.Send(input).ConfigureAwait(false);
         if (user == null)
@@ -57,10 +56,11 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost(Name = "CreateUser")] 
-    public async Task<ActionResult<User>> CreateUser(CreateUserInput input, Guid userId, UserRole role)
+    [HttpPost(Name = "CreateUser")]
+    public async Task<ActionResult<User>> CreateUser(CreateUserInput input)
     {
-        if (role == UserRole.Seller && input.Role != UserRole.Client)
+
+        if (GetUserRoleFromContext() == UserRole.Seller && input.Role != UserRole.Client)
             return Forbid();
 
         var user = await _mediator.Send(input).ConfigureAwait(false);
@@ -69,13 +69,18 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateUser")]
-    public async Task<ActionResult<User>> UpdateUser(UpdateUserInput input, Guid userId, UserRole role)
+    public async Task<ActionResult<User>> UpdateUser(UpdateUserInput input)
     {
-        if (role == UserRole.Seller && input.User.Role != UserRole.Client)
+        if (GetUserRoleFromContext() == UserRole.Seller && input.User.Role != UserRole.Client)
             return Forbid();
 
         var user = await _mediator.Send(input).ConfigureAwait(false);
 
         return CreatedAtAction(nameof(GetAll), new { id = user.Id }, user);
+    }
+
+    private UserRole GetUserRoleFromContext()
+    {
+        return (UserRole)HttpContext.Items["userRole"];
     }
 }

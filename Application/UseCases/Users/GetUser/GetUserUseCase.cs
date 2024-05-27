@@ -21,9 +21,11 @@ namespace Application.UseCases.Users.GetUser
             return request.Role switch
             {
                 UserRole.Admin => user,
-                UserRole.Seller => user.Role == UserRole.Client ? user : null,
+                UserRole.Seller => IsActiveClient(user) ? user : null,
                 _ => null
             };
         }
+        private bool IsActiveClient(User user) =>
+            user.Role == UserRole.Client && user.Active == true;
     }
 }

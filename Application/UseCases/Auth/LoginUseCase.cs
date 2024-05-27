@@ -28,7 +28,9 @@ namespace Application.UseCases.Auth
         {
             var user = await GetUser(request);
 
-            return (user.Value.Role is not null) ? GenerateJwtToken(request.Username, user.Value.Role, user.Value.Id) : null;
+                return (user is not null && user.Value.Role is not null) ? 
+                    GenerateJwtToken(request.Username, user.Value.Role, user.Value.Id) 
+                    : null;
         }
 
         private async Task<(string Role, string Id)?> GetUser(LoginInput login)
