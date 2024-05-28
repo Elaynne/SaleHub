@@ -54,7 +54,7 @@ public class BookRepository : BaseRepository, IBookRepository
         throw new NotFoundException($"Cannot update Book data. Book {book.Id} not found");
     }
 
-    public Task<Book> DeleteBookAsync(Guid id)
+    public async Task<bool> DeleteBookAsync(Guid id)
     {
         var book = await GetBookByIdAsync(id);
         if (book is not null)
