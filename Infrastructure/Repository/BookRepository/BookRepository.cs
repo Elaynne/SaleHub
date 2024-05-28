@@ -53,4 +53,17 @@ public class BookRepository : BaseRepository, IBookRepository
         }
         throw new NotFoundException($"Cannot update Book data. Book {book.Id} not found");
     }
+
+    public Task<Book> DeleteBookAsync(Guid id)
+    {
+        var book = await GetBookByIdAsync(id);
+        if (book is not null)
+        {
+            _memoryCache.Remove($"Book_{book.Id}");
+            DeleteItemOnCache<Book>(id, BooksCacheKey, ExpirationTimeInMinutes);
+            return true;
+        }
+        return false;
+    }
+
 }

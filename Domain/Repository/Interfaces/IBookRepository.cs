@@ -7,7 +7,8 @@ namespace Domain.Repository.Interfaces
     {
         Task<Book> GetBookByIdAsync(Guid id);
         Task<List<Book>> GetAllBooksAsync();
-        Task<Book> AddBookAsync(Book user);
-        Task<Book> UpdateBookAsync(Book user);
+        Task<Book> AddBookAsync(Book book);
+        Task<Book> UpdateBookAsync(Book book);
+        Task<bool> DeleteBookAsync(Guid id);
     }
 }

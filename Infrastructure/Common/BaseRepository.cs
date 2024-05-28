@@ -31,5 +31,14 @@ namespace Infrastructure.Common
 
             return cachedData;
         }
+
+        public void DeleteItemOnCache<T>(Guid id,
+           string cacheKey, int expirationTimeInMinutes)
+        {
+            var dataSet = GetDataSet<T>(cacheKey);
+            dataSet.Remove(id);
+
+            _memoryCache.Set(cacheKey, dataSet, TimeSpan.FromMinutes(expirationTimeInMinutes));
+        }
     }
 }

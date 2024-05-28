@@ -1,4 +1,8 @@
 ﻿using Application.UseCases.Auth;
+using Application.UseCases.Books.CreateBook;
+using Application.UseCases.Books.DeleteBook;
+using Application.UseCases.Books.GetBooks;
+using Application.UseCases.Books.UpdateBook;
 using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
 using Application.UseCases.Users.GetUsers;
@@ -19,6 +23,12 @@ namespace SalesHub.WebApi.DependencyInjection
             services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
 
             services.AddScoped<ILoginUseCase, LoginUseCase>();
+
+            services.AddScoped<ICreateBookUseCase, CreateBookUseCase>();
+            services.AddScoped<IGetUserUseCase, GetUserUseCase>();
+            services.AddScoped<IGetBooksUseCase, GetBooksUseCase>();
+            services.AddScoped<IUpdateBookUseCase, UpdateBookUseCase>();
+            services.AddScoped<IDeleteBookUseCase, DeleteBookUseCase>();
             return services;
 
         }
