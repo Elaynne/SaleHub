@@ -1,14 +1,15 @@
 ﻿using Domain.Repository.Interfaces;
+using Infrastructure.Common;
 using Infrastructure.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Infrastructure.Repository.User;
-public class UserRepository : IUserRepository
+public class UserRepository : BaseRepository, IUserRepository
 {
     private readonly IMemoryCache _memoryCache;
     private const string UsersCacheKey = "UsersKey";
-    private const int ExpirationTimeInMinutes = 15;
-    public UserRepository(IMemoryCache memoryCache)
+    private const int ExpirationTimeInMinutes = 60;
+    public UserRepository(IMemoryCache memoryCache) : base(memoryCache)
     {
         _memoryCache = memoryCache;
     }
@@ -21,13 +22,13 @@ public class UserRepository : IUserRepository
 
         _memoryCache.Set($"User_{userInput.Id}", userInput, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
        
-        AppendUserOnUsersDB(userInput);
+        AppendDataOnCache(userInput, UsersCacheKey, userInput.Id, ExpirationTimeInMinutes);
 
         return userInput;
     }
     public async Task<List<Domain.Models.User>> GetAllUsersAsync()
     {
-        var users = GetUsers();
+        var users = GetDataSet<Domain.Models.User>(UsersCacheKey);
         return (users != null) ? users.Values.ToList() : new List<Domain.Models.User>();
     }
    
@@ -46,32 +47,11 @@ public class UserRepository : IUserRepository
         {
             _memoryCache.Set($"User_{user.Id}", user, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
 
-            UpdateUserOnUsersDB(user);
+            UpdateDataOnCache<Domain.Models.User>(user, user.Id, UsersCacheKey, ExpirationTimeInMinutes);
             return user;
         }
         throw new NotFoundException($"Cannot update user data. User {user.Id} not found");
     }
-    private void AppendUserOnUsersDB(Domain.Models.User userInput)
-    {
-        if (!_memoryCache.TryGetValue(UsersCacheKey, out Dictionary<Guid, Domain.Models.User> users))
-            users = new Dictionary<Guid, Domain.Models.User>();
-       
-        users.Add(userInput.Id, userInput);
-        
-        _memoryCache.Set(UsersCacheKey, users, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
-    }
-    public void UpdateUserOnUsersDB(Domain.Models.User user)
-    {
-        var users = GetUsers();
-        users[user.Id] = user;
-
-        _memoryCache.Set(UsersCacheKey, users, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
-    }
-    private Dictionary<Guid, Domain.Models.User> GetUsers()
-    {
-        _memoryCache.TryGetValue(UsersCacheKey, out Dictionary<Guid, Domain.Models.User> cachedUsers);
-
-        return cachedUsers;
-    }
+    
    
 }

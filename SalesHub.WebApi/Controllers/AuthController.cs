@@ -6,16 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace SalesHub.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly IMediator _mediator;
 
-        public AuthController(IConfiguration configuration,
-            IMediator mediator)
+        public AuthController(IMediator mediator)
         {
-            _configuration = configuration;
             _mediator = mediator;
         }
 

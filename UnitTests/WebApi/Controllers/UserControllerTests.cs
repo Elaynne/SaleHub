@@ -8,7 +8,6 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using SalesHub.WebApi.Controllers;
 
@@ -18,12 +17,11 @@ namespace UnitTests.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private readonly UsersController _controller;
-        private readonly ILogger<UsersController> _logger = Substitute.For<ILogger<UsersController>>();
 
         public UsersControllerTests()
         {
             _mediator = Substitute.For<IMediator>();
-            _controller = new UsersController(_logger, _mediator);
+            _controller = new UsersController(_mediator);
             _controller.ControllerContext = new ControllerContext();
             _controller.ControllerContext.HttpContext = new DefaultHttpContext();
             _controller.ControllerContext.HttpContext.Items["userRole"] = UserRole.Admin;
