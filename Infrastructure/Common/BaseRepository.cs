@@ -23,7 +23,7 @@ namespace Infrastructure.Common
             var dataSet = GetDataSet<T>(cacheKey);
             dataSet[id] = data;
 
-            _memoryCache.Set(cacheKey, data, TimeSpan.FromMinutes(expirationTimeInMinutes));
+            _memoryCache.Set(cacheKey, dataSet, TimeSpan.FromMinutes(expirationTimeInMinutes));
         }
         public Dictionary<Guid, T> GetDataSet<T>(string cacheKey)
         {

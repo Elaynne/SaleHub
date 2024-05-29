@@ -17,13 +17,9 @@ namespace SalesHub.WebApi.Controllers;
 [RoleDiscoveryFilter]
 public class UsersController : ControllerBase
 {
-
-    private readonly ILogger<UsersController> _logger;
     private readonly IMediator _mediator;
-    public UsersController(ILogger<UsersController> logger,
-        IMediator mediator)
+    public UsersController(IMediator mediator)
     {
-        _logger = logger;
         _mediator = mediator;
     }
 
@@ -77,8 +73,6 @@ public class UsersController : ControllerBase
 
         return Ok(user);
     }
-    private UserRole GetUserRoleFromContext()
-    {
-        return (UserRole)HttpContext.Items["userRole"];
-    }
+    private UserRole GetUserRoleFromContext() => (UserRole)HttpContext.Items["userRole"];
+    
 }

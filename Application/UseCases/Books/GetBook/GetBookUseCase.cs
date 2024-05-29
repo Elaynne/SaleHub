@@ -17,9 +17,9 @@ namespace Application.UseCases.Books.GetBook
 
         public async Task<Book?> Handle(GetBookInput request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Getting book {UserId}", request.Id);
+            _logger.LogInformation("Getting book {BookId} for user {UserId}", request.BookId, request.UserId);
 
-            return await _bookRepository.GetBookByIdAsync(request.Id);
+            return await _bookRepository.GetBookByIdAsync(request.BookId);
         }
     }
 }

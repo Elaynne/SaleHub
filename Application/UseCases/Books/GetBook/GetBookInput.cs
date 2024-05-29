@@ -5,6 +5,8 @@ namespace Application.UseCases.Books.GetBook
 {
     public class GetBookInput : IRequest<Book>
     {
-        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+
+        public Guid BookId { get; set; }
     }
 }
