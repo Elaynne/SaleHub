@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Domain.Cache;
+using Domain.Models;
 using Domain.Repository.Interfaces;
 using Infrastructure.Common;
 using Infrastructure.Exceptions;
@@ -8,7 +9,6 @@ namespace Infrastructure.Repository.BookRepository;
 public class BookRepository : BaseRepository, IBookRepository
 {
     private readonly IMemoryCache _memoryCache;
-    private const string BooksCacheKey = "BooksKey";
     private const int ExpirationTimeInMinutes = 60;
     public BookRepository(IMemoryCache memoryCache) : base(memoryCache)
     {
@@ -23,13 +23,13 @@ public class BookRepository : BaseRepository, IBookRepository
 
         _memoryCache.Set($"Book_{bookInput.Id}", bookInput, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
 
-        AppendDataOnCache<Book>(bookInput, BooksCacheKey, bookInput.Id, ExpirationTimeInMinutes);
+        AppendDataOnCache<Book>(bookInput, CacheKeys.BooksKey, bookInput.Id, ExpirationTimeInMinutes);
 
         return bookInput;
     }
     public async Task<List<Book>> GetAllBooksAsync()
     {
-        var books = GetDataSet<Book>(BooksCacheKey);
+        var books = GetDataSet<Book>(CacheKeys.BooksKey);
         return books != null ? books.Values.ToList() : new List<Book>();
     }
 
@@ -48,7 +48,7 @@ public class BookRepository : BaseRepository, IBookRepository
         {
             _memoryCache.Set($"Book_{book.Id}", book, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
 
-            UpdateDataOnCache<Book>(book, book.Id, BooksCacheKey, ExpirationTimeInMinutes);
+            UpdateDataOnCache<Book>(book, book.Id, CacheKeys.BooksKey, ExpirationTimeInMinutes);
             return book;
         }
         throw new NotFoundException($"Cannot update Book data. Book {book.Id} not found");
@@ -60,7 +60,7 @@ public class BookRepository : BaseRepository, IBookRepository
         if (book is not null)
         {
             _memoryCache.Remove($"Book_{book.Id}");
-            DeleteItemOnCache<Book>(id, BooksCacheKey, ExpirationTimeInMinutes);
+            DeleteItemOnCache<Book>(id, CacheKeys.BooksKey, ExpirationTimeInMinutes);
             return true;
         }
         return false;

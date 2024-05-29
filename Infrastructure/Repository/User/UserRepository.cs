@@ -1,4 +1,5 @@
-﻿using Domain.Repository.Interfaces;
+﻿using Domain.Cache;
+using Domain.Repository.Interfaces;
 using Infrastructure.Common;
 using Infrastructure.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
@@ -7,7 +8,6 @@ namespace Infrastructure.Repository.User;
 public class UserRepository : BaseRepository, IUserRepository
 {
     private readonly IMemoryCache _memoryCache;
-    private const string UsersCacheKey = "UsersKey";
     private const int ExpirationTimeInMinutes = 60;
     public UserRepository(IMemoryCache memoryCache) : base(memoryCache)
     {
@@ -22,13 +22,13 @@ public class UserRepository : BaseRepository, IUserRepository
 
         _memoryCache.Set($"User_{userInput.Id}", userInput, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
        
-        AppendDataOnCache(userInput, UsersCacheKey, userInput.Id, ExpirationTimeInMinutes);
+        AppendDataOnCache(userInput, CacheKeys.UsersKey, userInput.Id, ExpirationTimeInMinutes);
 
         return userInput;
     }
     public async Task<List<Domain.Models.User>> GetAllUsersAsync()
     {
-        var users = GetDataSet<Domain.Models.User>(UsersCacheKey);
+        var users = GetDataSet<Domain.Models.User>(CacheKeys.UsersKey);
         return (users != null) ? users.Values.ToList() : new List<Domain.Models.User>();
     }
    
@@ -47,7 +47,7 @@ public class UserRepository : BaseRepository, IUserRepository
         {
             _memoryCache.Set($"User_{user.Id}", user, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
 
-            UpdateDataOnCache<Domain.Models.User>(user, user.Id, UsersCacheKey, ExpirationTimeInMinutes);
+            UpdateDataOnCache<Domain.Models.User>(user, user.Id, CacheKeys.UsersKey, ExpirationTimeInMinutes);
             return user;
         }
         throw new NotFoundException($"Cannot update user data. User {user.Id} not found");

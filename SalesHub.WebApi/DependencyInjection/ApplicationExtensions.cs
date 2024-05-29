@@ -4,12 +4,18 @@ using Application.UseCases.Books.DeleteBook;
 using Application.UseCases.Books.GetBook;
 using Application.UseCases.Books.GetBooks;
 using Application.UseCases.Books.UpdateBook;
+using Application.UseCases.Orders.CreateOrder;
+using Application.UseCases.Orders.GetOrders;
 using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
 using Application.UseCases.Users.GetUsers;
 using Application.UseCases.Users.UpdateUser;
+using Domain.Cache;
+using Domain.Models;
 using Domain.Repository.Interfaces;
+using Infrastructure.Cache;
 using Infrastructure.Repository.BookRepository;
+using Infrastructure.Repository.OrderRepository;
 using Infrastructure.Repository.User;
 
 namespace SalesHub.WebApi.DependencyInjection
@@ -30,6 +36,12 @@ namespace SalesHub.WebApi.DependencyInjection
             services.AddScoped<IGetBooksUseCase, GetBooksUseCase>();
             services.AddScoped<IUpdateBookUseCase, UpdateBookUseCase>();
             services.AddScoped<IDeleteBookUseCase, DeleteBookUseCase>();
+
+            services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
+            services.AddScoped<IGetOrdersUseCase, GetOrdersUseCase>();
+            //services.AddScoped<IGetOrderUseCase, GetOrderUseCase>();
+            //services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
+            //services.AddScoped<IDeleteOrderUseCase, DeleteOrderUseCase>();
             return services;
 
         }
@@ -37,6 +49,8 @@ namespace SalesHub.WebApi.DependencyInjection
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<ICacheService<Book>, CacheService<Book>>();
             return services;
         }
     }
