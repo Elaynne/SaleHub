@@ -10,7 +10,7 @@ using Domain.Enums;
 using Domain.Models;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Application.UseCases.Auth
+namespace Application.UseCases.Users.Login
 {
     public class LoginUseCase : ILoginUseCase
     {
@@ -39,7 +39,7 @@ namespace Application.UseCases.Auth
         {
             var user = await GetUser(request);
 
-            return (user is not null && user.Value.Role is not null) ?
+            return user is not null && user.Value.Role is not null ?
                 GenerateJwtToken(request.Username, user.Value.Role, user.Value.Id)
                 : null;
         }
@@ -92,11 +92,11 @@ namespace Application.UseCases.Auth
 
             _memoryCache.Set("mock_loaded", true);
         }
-        private List<Domain.Models.User> GetUsersMock()
+        private List<User> GetUsersMock()
         {
-            return new List<Domain.Models.User>()
+            return new List<User>()
             {
-                new Domain.Models.User() {
+                new User() {
                     Id = new Guid("a17ad52f-8720-492e-af21-b08514ea3e48"),
                     UserName = "user-admin",
                     Email = "admin@gmail.com",
@@ -104,7 +104,7 @@ namespace Application.UseCases.Auth
                     Role = UserRole.Admin,
                     Active = true
                 },
-                new Domain.Models.User() {
+                new User() {
                     Id = new Guid("a21025ba-8fe1-485d-832d-cc050778e17b"),
                     UserName = "user-seller",
                     Email = "seller@gmail.com",
@@ -112,7 +112,7 @@ namespace Application.UseCases.Auth
                     Role = UserRole.Seller,
                     Active = true
                 },
-                new Domain.Models.User() {
+                new User() {
                     Id = new Guid("de4711ce-3fb2-4050-a483-936b364fd60f"),
                     UserName = "user-client",
                     Email = "client@gmail.com",
@@ -123,7 +123,7 @@ namespace Application.UseCases.Auth
             };
         }
 
-        private List<Domain.Models.Book> GetBooksMock()
+        private List<Book> GetBooksMock()
         {
             return new List<Book>
             {

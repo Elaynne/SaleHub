@@ -1,6 +1,7 @@
 using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
 using Application.UseCases.Users.GetUsers;
+using Application.UseCases.Users.Login;
 using Application.UseCases.Users.UpdateUser;
 using Domain.Enums;
 using Domain.Models;
@@ -13,8 +14,6 @@ namespace SalesHub.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin, Seller")]
-[RoleDiscoveryFilter]
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -23,7 +22,19 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
 
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> LoginAsync([FromBody] LoginInput loginInput)
+    {
+        var token = await _mediator.Send(loginInput).ConfigureAwait(false);
+        if (token is null)
+            return Unauthorized();
+        return Ok(token);
+    }
+
     [HttpGet(Name = "GetAllUsers")]
+    [RoleDiscoveryFilter]
+    [Authorize(Roles = "Admin, Seller")]
     public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
         var input = new GetUsersInput()
@@ -37,6 +48,8 @@ public class UsersController : ControllerBase
 
 
     [HttpGet("{id}")]
+    [RoleDiscoveryFilter]
+    [Authorize(Roles = "Admin, Seller")]
     public async Task<ActionResult<User>> GetUser(Guid id)
     {
         var input = new GetUserInput()
@@ -53,6 +66,8 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost(Name = "CreateUser")]
+    [RoleDiscoveryFilter]
+    [Authorize(Roles = "Admin, Seller")]
     public async Task<ActionResult<User>> CreateUser(CreateUserInput input)
     {
         if (GetUserRoleFromContext() == UserRole.Seller && input.Role != UserRole.Client)
@@ -64,6 +79,8 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateUser")]
+    [RoleDiscoveryFilter]
+    [Authorize(Roles = "Admin, Seller")]
     public async Task<ActionResult<User>> UpdateUser(UpdateUserInput input)
     {
         if (GetUserRoleFromContext() == UserRole.Seller && input.User.Role != UserRole.Client)
