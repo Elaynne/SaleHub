@@ -1,7 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using SalesHub.WebApi.DependencyInjection;
 using Application.UseCases.Users.CreateUser;
-using Application.MappingProfiles;
 using SalesHub.WebApi.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -55,7 +54,6 @@ namespace SalesHub.WebApi
             {
                 config.RegisterServicesFromAssembly(typeof(CreateUserUseCase).Assembly);
             });
-            services.AddAutoMapper(typeof(AutomapperProfile));
             services.AddMemoryCache();
             services.AddAuthentication(options =>
             {

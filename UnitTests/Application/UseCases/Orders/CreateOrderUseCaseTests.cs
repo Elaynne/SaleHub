@@ -1,6 +1,5 @@
 ﻿using Application.UseCases.Books.GetBook;
 using Application.UseCases.Orders.CreateOrder;
-using AutoMapper;
 using Domain.Cache;
 using Domain.Models;
 using Domain.Repository.Interfaces;
@@ -16,7 +15,6 @@ namespace UnitTests.Application.UseCases.Orders
     {
         private readonly IOrderRepository _orderRepository;
         private readonly ILogger<CreateOrderUseCase> _logger;
-        private readonly IMapper _mapper;
         private readonly IGetBookUseCase _getBookUseCase;
         private readonly ICacheService<Book> _cacheService;
         private readonly CreateOrderUseCase _useCase;
@@ -33,19 +31,18 @@ namespace UnitTests.Application.UseCases.Orders
 
             _request = new CreateOrderInput()
              {
-                UserId = Guid.NewGuid(),
+                ClientId = Guid.NewGuid(),
+                SellerId = Guid.NewGuid(),
                 OrderItems = _orderItems
             };
 
             _orderRepository = Substitute.For<IOrderRepository>();
             _logger = Substitute.For<ILogger<CreateOrderUseCase>>();
-            _mapper = Substitute.For<IMapper>();
             _getBookUseCase = Substitute.For<IGetBookUseCase>();
             _cacheService = Substitute.For<ICacheService<Book>>();
             _useCase = new CreateOrderUseCase(
                 _orderRepository,
                 _logger,
-                _mapper,
                 _getBookUseCase,
                 _cacheService
             );
@@ -54,10 +51,9 @@ namespace UnitTests.Application.UseCases.Orders
         [Fact]
         public async Task Handle_ShouldCreateOrder_WhenAllItemsInStock()
         {
-            var order = new Order { Id = Guid.NewGuid()};
+            var order = new Order { Id = Guid.NewGuid() };
             var books = _orderItems.Select(x => new Book { Id = x.BookId, Stock = 10 }).ToList();
 
-            _mapper.Map<Order>(_request).Returns(order);
             foreach (var book in books)
             {
                 _getBookUseCase.Handle(Arg.Is<GetBookInput>(x => x.BookId == book.Id), Arg.Any<CancellationToken>())
@@ -69,13 +65,14 @@ namespace UnitTests.Application.UseCases.Orders
                     Arg.Any<Func<Task<Dictionary<Guid, Book>>>>(),
                     CacheKeys.BooksKey, "Book")
                 .Returns(Task.FromResult(true));
-            _orderRepository.AddOrderAsync(order).Returns(Task.FromResult(order));
+
+            _orderRepository.AddOrderAsync(Arg.Any<Order>()).Returns(Task.FromResult(order));
 
             var result = await _useCase.Handle(_request, CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.Equal(order.Id, result.Id);
-            await _orderRepository.Received(1).AddOrderAsync(order);
+            await _orderRepository.Received(1).AddOrderAsync(Arg.Any<Order>());
         }
 
         [Fact]
@@ -113,7 +110,6 @@ namespace UnitTests.Application.UseCases.Orders
             var order = new Order { Id = Guid.NewGuid(),};
             var books = _orderItems.Select(x => new Book { Id = x.BookId, Stock = 10 }).ToList();
 
-            _mapper.Map<Order>(_request).Returns(order);
             foreach (var book in books)
             {
                 _getBookUseCase.Handle(Arg.Is<GetBookInput>(i => i.BookId == book.Id), Arg.Any<CancellationToken>())

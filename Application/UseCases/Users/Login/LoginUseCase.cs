@@ -1,6 +1,4 @@
-﻿
-using AutoMapper;
-using Domain.Repository.Interfaces;
+﻿using Domain.Repository.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -16,6 +14,7 @@ namespace Application.UseCases.Users.Login
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
+
         private readonly IBookRepository _bookRepository;
         private readonly IMemoryCache _memoryCache;
 
@@ -27,9 +26,10 @@ namespace Application.UseCases.Users.Login
         {
             _userRepository = userRepository;
             _configuration = configuration;
+
+            //mock purpose
             _bookRepository = bookRepository;
             _memoryCache = memoryCache;
-
             _memoryCache.TryGetValue("mock_loaded", out bool mockLoaded);
             if (!mockLoaded)
                 SetupMock();

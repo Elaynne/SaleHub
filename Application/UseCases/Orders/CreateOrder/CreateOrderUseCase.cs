@@ -1,6 +1,6 @@
 ﻿using Application.UseCases.Books.GetBook;
-using AutoMapper;
 using Domain.Cache;
+using Domain.Enums;
 using Domain.Models;
 using Domain.Repository.Interfaces;
 using Infrastructure.Exceptions;
@@ -12,7 +12,6 @@ namespace Application.UseCases.Orders.CreateOrder
     {
         private readonly IOrderRepository _orderRepository;
         private readonly ILogger<CreateOrderUseCase> _logger;
-        private readonly IMapper _mapper;
         private readonly IGetBookUseCase _getBookUseCase;
         private readonly ICacheService<Book> _cacheService;
         private readonly List<Book> _fetchedItems;
@@ -20,13 +19,11 @@ namespace Application.UseCases.Orders.CreateOrder
 
         public CreateOrderUseCase(IOrderRepository orderRepository,
             ILogger<CreateOrderUseCase> logger,
-            IMapper mapper,
             IGetBookUseCase getBookUseCase,
             ICacheService<Book> cacheService)
         {
             _orderRepository = orderRepository;
             _logger = logger;
-            _mapper = mapper;
             _getBookUseCase = getBookUseCase;
             _cacheService = cacheService;
             _fetchedItems = new List<Book>();
@@ -35,9 +32,17 @@ namespace Application.UseCases.Orders.CreateOrder
 
         public async Task<Order> Handle(CreateOrderInput request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("User {UserId} creating order.", request.UserId);
+            _logger.LogDebug("User {UserId} creating order.", request.SellerId);
 
-            var order = _mapper.Map<Order>(request);
+            var order = new Order()
+            {
+                Id = Guid.NewGuid(),
+                ClientId = request.ClientId,
+                SellerId = request.SellerId,
+                OrderItems = request.OrderItems,
+                OrderDate = request.OrderDate,
+                Status = OrderStatus.Pending
+            };
 
             var totalPrice = 0m;
 
@@ -46,7 +51,7 @@ namespace Application.UseCases.Orders.CreateOrder
                 try {
                     var responseBook = await _getBookUseCase.Handle(new GetBookInput()
                     {
-                        UserId = request.UserId,
+                        UserId = request.SellerId,
                         BookId = item.BookId
                     }, cancellationToken).ConfigureAwait(false);
 
@@ -78,18 +83,17 @@ namespace Application.UseCases.Orders.CreateOrder
                 async () => await FetchFinalListAsync(),
                 CacheKeys.BooksKey, "Book");
 
-            if (result)
+            if (!result)
             {
-                _logger.LogInformation("Cache updated successfully.");
-
-                order.TotalPrice = totalPrice;
-                return await _orderRepository.AddOrderAsync(order);
-            }
-            else
-            {
-                _logger.LogInformation("Cache update failed and rollback completed.");
+                _logger.LogDebug("Cache update failed and rollback completed.");
                 return null;
             }
+
+            _logger.LogDebug("Cache updated successfully.");
+
+            order.TotalPrice = totalPrice;
+            var orderResult = await _orderRepository.AddOrderAsync(order);
+            return orderResult;
         }
 
         private async Task<Dictionary<Guid, Book>> FetchFinalListAsync() => _fetchFinalList;

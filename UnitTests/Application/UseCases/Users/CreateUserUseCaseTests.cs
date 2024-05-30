@@ -4,14 +4,12 @@ using NSubstitute;
 using FluentAssertions;
 using NSubstitute.ExceptionExtensions;
 using Application.UseCases.Users.CreateUser;
-using AutoMapper;
 
 namespace UnitTests.Application.UseCases.Users
 {
     public class CreateUserUseCaseTests
     {
         private IUserRepository _userRepository = Substitute.For<IUserRepository>();
-        private IMapper _mapper = Substitute.For<IMapper>();
         private CreateUserInput _request = new CreateUserInput();
         public CreateUserUseCaseTests()
         {
@@ -30,8 +28,7 @@ namespace UnitTests.Application.UseCases.Users
             };
 
             _userRepository.AddUserAsync(Arg.Any<User>()).Returns(user);
-            _mapper.Map<User>(Arg.Any<CreateUserInput>()).Returns(user);
-            var createUserUseCase = new CreateUserUseCase(_userRepository, _mapper);
+            var createUserUseCase = new CreateUserUseCase(_userRepository);
 
             var result = await createUserUseCase.Handle(_request, CancellationToken.None);
 
@@ -42,7 +39,7 @@ namespace UnitTests.Application.UseCases.Users
         public async Task Handle_ThrowsException_WhenUserRepositoryThrows()
         {
             _userRepository.AddUserAsync(Arg.Any<User>()).Throws(new Exception("Repository exception"));
-            var createUserUseCase = new CreateUserUseCase(_userRepository, _mapper);
+            var createUserUseCase = new CreateUserUseCase(_userRepository);
 
             Func<Task> act = async () => await createUserUseCase.Handle(_request, CancellationToken.None);
 

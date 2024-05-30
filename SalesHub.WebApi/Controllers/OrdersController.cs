@@ -2,7 +2,6 @@
 using Application.UseCases.Orders.GetOrder;
 using Application.UseCases.Orders.GetOrders;
 using Application.UseCases.Orders.CancelOrder;
-using AutoMapper;
 using Domain.Enums;
 using Domain.Models;
 using MediatR;
@@ -13,18 +12,15 @@ using SalesHub.WebApi.ActionFilterAtributes;
 namespace SalesHub.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [RoleDiscoveryFilter]
     public class OrdersController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
-        public OrdersController(IMediator mediator,
-            IMapper mapper)
+        public OrdersController(IMediator mediator)
         {
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         [HttpGet(Name = "GetAllOrders")]
@@ -59,8 +55,13 @@ namespace SalesHub.WebApi.Controllers
         [Authorize(Roles = "Admin, Seller")]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderViewModel viewModel)
         {
-            var input = _mapper.Map<CreateOrderInput>(viewModel);
-            input.UserId = GetUserIdFromContext();
+            var input = new CreateOrderInput()
+            {
+                SellerId = GetUserIdFromContext(),
+                ClientId = viewModel.CLientId,
+                OrderItems = viewModel.OrderItems,
+                OrderDate = DateTime.Now
+            };
 
             var order = await _mediator.Send(input).ConfigureAwait(false);
 

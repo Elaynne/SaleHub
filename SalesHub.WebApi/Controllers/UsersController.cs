@@ -13,7 +13,7 @@ using SalesHub.WebApi.ActionFilterAtributes;
 namespace SalesHub.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/users")]
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
