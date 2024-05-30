@@ -11,17 +11,17 @@ using NSubstitute.ExceptionExtensions;
 
 namespace UnitTests.Application.UseCases.Orders
 {
-    public class CreateOrderUseCaseTests
+    public class CreateOrderTests
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ILogger<CreateOrderUseCase> _logger;
-        private readonly IRetrieveBookById _getBookUseCase;
+        private readonly ILogger<CreateOrder> _logger;
+        private readonly IRetrieveBookById _IRetrieveBookByIdUseCase;
         private readonly ICacheService<Book> _cacheService;
-        private readonly CreateOrderUseCase _useCase;
+        private readonly CreateOrder _useCase;
         private readonly List<OrderItem> _orderItems;
         private readonly CreateOrderInput _request;
        
-        public CreateOrderUseCaseTests()
+        public CreateOrderTests()
         {
             _orderItems = new List<OrderItem>
             {
@@ -37,13 +37,13 @@ namespace UnitTests.Application.UseCases.Orders
             };
 
             _orderRepository = Substitute.For<IOrderRepository>();
-            _logger = Substitute.For<ILogger<CreateOrderUseCase>>();
-            _getBookUseCase = Substitute.For<IRetrieveBookById>();
+            _logger = Substitute.For<ILogger<CreateOrder>>();
+            _IRetrieveBookByIdUseCase = Substitute.For<IRetrieveBookById>();
             _cacheService = Substitute.For<ICacheService<Book>>();
-            _useCase = new CreateOrderUseCase(
+            _useCase = new CreateOrder(
                 _orderRepository,
                 _logger,
-                _getBookUseCase,
+                _IRetrieveBookByIdUseCase,
                 _cacheService
             );
         }
@@ -56,7 +56,7 @@ namespace UnitTests.Application.UseCases.Orders
 
             foreach (var book in books)
             {
-                _getBookUseCase.Handle(Arg.Is<RetrieveBookByIdInput>(x => x.BookId == book.Id), Arg.Any<CancellationToken>())
+                _IRetrieveBookByIdUseCase.Handle(Arg.Is<RetrieveBookByIdInput>(x => x.BookId == book.Id), Arg.Any<CancellationToken>())
                     .Returns(book);
             }
             _cacheService.UpdateCacheAsync(
@@ -82,7 +82,7 @@ namespace UnitTests.Application.UseCases.Orders
 
             foreach (var book in books)
             {
-                _getBookUseCase.Handle(Arg.Is<RetrieveBookByIdInput>(x => x.BookId == book.Id), Arg.Any<CancellationToken>())
+                _IRetrieveBookByIdUseCase.Handle(Arg.Is<RetrieveBookByIdInput>(x => x.BookId == book.Id), Arg.Any<CancellationToken>())
                     .Returns(book);
             }
 
@@ -95,7 +95,7 @@ namespace UnitTests.Application.UseCases.Orders
         [Fact]
         public async Task Handle_ShouldReturnNull_WhenAnyBookNotFound()
         {
-            _getBookUseCase.Handle(Arg.Any<RetrieveBookByIdInput>(), Arg.Any<CancellationToken>())
+            _IRetrieveBookByIdUseCase.Handle(Arg.Any<RetrieveBookByIdInput>(), Arg.Any<CancellationToken>())
                 .Throws(new NotFoundException("Book not found"));
 
             var result = await _useCase.Handle(_request, CancellationToken.None);
@@ -112,7 +112,7 @@ namespace UnitTests.Application.UseCases.Orders
 
             foreach (var book in books)
             {
-                _getBookUseCase.Handle(Arg.Is<RetrieveBookByIdInput>(i => i.BookId == book.Id), Arg.Any<CancellationToken>())
+                _IRetrieveBookByIdUseCase.Handle(Arg.Is<RetrieveBookByIdInput>(i => i.BookId == book.Id), Arg.Any<CancellationToken>())
                     .Returns(book);
             }
             _cacheService.UpdateCacheAsync(

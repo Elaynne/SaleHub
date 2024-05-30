@@ -1,4 +1,4 @@
-﻿using Application.UseCases.Orders.GetOrders;
+﻿using Application.UseCases.Orders.RetrieveAllOrders;
 using Domain.Enums;
 using Domain.Models;
 using Domain.Repository.Interfaces;
@@ -7,27 +7,27 @@ using NSubstitute;
 
 namespace UnitTests.Application.UseCases.Orders
 {
-    public class GetOrdersUseCaseTests
+    public class RetrieveAllOrdersTests
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ILogger<GetOrdersUseCase> _logger;
-        private readonly GetOrdersUseCase _getOrdersUseCase;
+        private readonly ILogger<RetrieveAllOrders> _logger;
+        private readonly RetrieveAllOrders _retrieveAllOrders;
 
-        public GetOrdersUseCaseTests()
+        public RetrieveAllOrdersTests()
         {
             _orderRepository = Substitute.For<IOrderRepository>();
-            _logger = Substitute.For<ILogger<GetOrdersUseCase>>();
-            _getOrdersUseCase = new GetOrdersUseCase(_orderRepository, _logger);
+            _logger = Substitute.For<ILogger<RetrieveAllOrders>>();
+            _retrieveAllOrders = new RetrieveAllOrders(_orderRepository, _logger);
         }
 
         [Fact]
         public async Task Handle_ShouldReturnAllOrders_WhenUserRoleIsAdmin()
         {
-            var input = new GetOrdersInput { UserId = Guid.NewGuid(), UserRole = UserRole.Admin };
+            var input = new RetrieveAllOrdersInput { UserId = Guid.NewGuid(), UserRole = UserRole.Admin };
             var orders = GetMockOrders();
             _orderRepository.GetAllOrdersAsync().Returns(orders.ToList());
 
-            var result = await _getOrdersUseCase.Handle(input, CancellationToken.None);
+            var result = await _retrieveAllOrders.Handle(input, CancellationToken.None);
 
             Assert.Equal(orders.Count(), result.Count());
         }
@@ -38,11 +38,11 @@ namespace UnitTests.Application.UseCases.Orders
         public async Task Handle_ShouldReturnSellerOrders_WhenUserRoleIsSeller(UserRole role)
         {
             var id = Guid.NewGuid();
-            var input = new GetOrdersInput { UserId = id, UserRole = role };
+            var input = new RetrieveAllOrdersInput { UserId = id, UserRole = role };
             var orders = GetMockOrders();
             _orderRepository.GetAllOrdersAsync().Returns(orders.ToList());
 
-            var result = await _getOrdersUseCase.Handle(input, CancellationToken.None);
+            var result = await _retrieveAllOrders.Handle(input, CancellationToken.None);
             var expectedOrders = new List<Order>();
 
             if (role == UserRole.Seller) 
@@ -57,11 +57,11 @@ namespace UnitTests.Application.UseCases.Orders
         [Fact]
         public async Task Handle_ShouldReturnNull_WhenUserRoleIsUnknown()
         {
-            var input = new GetOrdersInput { UserId = Guid.NewGuid(), UserRole = (UserRole)999 };
+            var input = new RetrieveAllOrdersInput { UserId = Guid.NewGuid(), UserRole = (UserRole)999 };
             var orders = GetMockOrders();
             _orderRepository.GetAllOrdersAsync().Returns(orders.ToList());
 
-            var result = await _getOrdersUseCase.Handle(input, CancellationToken.None);
+            var result = await _retrieveAllOrders.Handle(input, CancellationToken.None);
 
             Assert.Null(result);
         }

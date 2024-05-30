@@ -4,8 +4,8 @@ using Application.UseCases.Books.RetrieveBookById;
 using Application.UseCases.Books.RetrieveAllBooks;
 using Application.UseCases.Books.UpdateBook;
 using Application.UseCases.Orders.CreateOrder;
-using Application.UseCases.Orders.GetOrder;
-using Application.UseCases.Orders.GetOrders;
+using Application.UseCases.Orders.RetrieveAllOrders;
+using Application.UseCases.Orders.RetrieveOrderById;
 using Application.UseCases.Orders.CancelOrder;
 using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
@@ -39,10 +39,10 @@ namespace SalesHub.WebApi.DependencyInjection
             services.AddScoped<IUpdateBook, UpdateBook>();
             services.AddScoped<IDeleteBook, DeleteBook>();
 
-            services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
-            services.AddScoped<IGetOrdersUseCase, GetOrdersUseCase>();
-            services.AddScoped<IGetOrderUseCase, GetOrderUseCase>();
-            services.AddScoped<ICanceloOrderUseCase, CancelOrderUseCase>();
+            services.AddScoped<ICreateOrder, CreateOrder>();
+            services.AddScoped<IRetrieveAllBooks, RetrieveAllBooks>();
+            services.AddScoped<IRetrieveOrderById, RetrieveOrderById>();
+            services.AddScoped<ICanceloOrder, CancelOrder>();
             return services;
 
         }

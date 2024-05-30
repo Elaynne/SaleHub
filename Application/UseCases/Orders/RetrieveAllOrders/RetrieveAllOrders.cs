@@ -3,20 +3,20 @@ using Domain.Models;
 using Domain.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace Application.UseCases.Orders.GetOrders
+namespace Application.UseCases.Orders.RetrieveAllOrders
 {
-    public class GetOrdersUseCase : IGetOrdersUseCase
+    public class RetrieveAllOrders : IRetrieveAllOrders
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ILogger<GetOrdersUseCase> _logger;
-        public GetOrdersUseCase(IOrderRepository orderRepository,
-            ILogger<GetOrdersUseCase> logger)
+        private readonly ILogger<RetrieveAllOrders> _logger;
+        public RetrieveAllOrders(IOrderRepository orderRepository,
+            ILogger<RetrieveAllOrders> logger)
         {
             _orderRepository = orderRepository;
             _logger = logger;
         }
 
-        public async Task<IEnumerable<Order>?> Handle(GetOrdersInput input, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Order>?> Handle(RetrieveAllOrdersInput input, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Getting orders for user {UserId}", input.UserId);
 

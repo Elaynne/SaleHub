@@ -1,16 +1,15 @@
 ﻿using Domain.Enums;
-using Domain.Models;
 using Domain.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.Orders.CancelOrder
 {
-    public class CancelOrderUseCase : ICanceloOrderUseCase
+    public class CancelOrder : ICanceloOrder
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ILogger<CancelOrderUseCase> _logger;
-        public CancelOrderUseCase(IOrderRepository orderRepository,
-            ILogger<CancelOrderUseCase> logger)
+        private readonly ILogger<CancelOrder> _logger;
+        public CancelOrder(IOrderRepository orderRepository,
+            ILogger<CancelOrder> logger)
         {
             _orderRepository = orderRepository;
             _logger = logger;

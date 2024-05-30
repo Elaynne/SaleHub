@@ -2,11 +2,12 @@
 using Domain.Models;
 using MediatR;
 
-namespace Application.UseCases.Orders.GetOrders
+namespace Application.UseCases.Orders.RetrieveOrderById
 {
-    public class GetOrdersInput : IRequest<IEnumerable<Order>>
+    public class RetrieveOrderByIdInput : IRequest<Order>
     {
         public Guid UserId { get; set; }
         public UserRole UserRole { get; set; }
+        public Guid OrderId { get; set; }
     }
 }

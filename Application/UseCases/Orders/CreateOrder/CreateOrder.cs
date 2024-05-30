@@ -8,17 +8,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.Orders.CreateOrder
 {
-    public class CreateOrderUseCase : ICreateOrderUseCase
+    public class CreateOrder : ICreateOrder
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ILogger<CreateOrderUseCase> _logger;
+        private readonly ILogger<CreateOrder> _logger;
         private readonly IRetrieveBookById _getBookUseCase;
         private readonly ICacheService<Book> _cacheService;
         private readonly List<Book> _fetchedItems;
         private readonly Dictionary<Guid, Book> _fetchFinalList;
 
-        public CreateOrderUseCase(IOrderRepository orderRepository,
-            ILogger<CreateOrderUseCase> logger,
+        public CreateOrder(IOrderRepository orderRepository,
+            ILogger<CreateOrder> logger,
             IRetrieveBookById getBookUseCase,
             ICacheService<Book> cacheService)
         {

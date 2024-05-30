@@ -1,6 +1,6 @@
 ﻿using Application.UseCases.Orders.CreateOrder;
-using Application.UseCases.Orders.GetOrder;
-using Application.UseCases.Orders.GetOrders;
+using Application.UseCases.Orders.RetrieveOrderById;
+using Application.UseCases.Orders.RetrieveAllOrders;
 using Application.UseCases.Orders.CancelOrder;
 using Domain.Enums;
 using Domain.Models;
@@ -26,7 +26,7 @@ namespace SalesHub.WebApi.Controllers
         [HttpGet(Name = "GetAllOrders")]
         public async Task<ActionResult<IEnumerable<Order>>> GetAll()
         {
-            var input = new GetOrdersInput()
+            var input = new RetrieveAllOrdersInput()
             {
                 UserId = GetUserIdFromContext(),
                 UserRole = GetUserRoleFromContext(),
@@ -38,7 +38,7 @@ namespace SalesHub.WebApi.Controllers
         [HttpGet("{id}", Name = "GetOrder")]
         public async Task<ActionResult<Order>> GetOrder(Guid id)
         {
-            var order = await _mediator.Send(new GetOrderInput { 
+            var order = await _mediator.Send(new RetrieveOrderByIdInput { 
                 OrderId = id,
                 UserId = GetUserIdFromContext(),
                 UserRole = GetUserRoleFromContext()

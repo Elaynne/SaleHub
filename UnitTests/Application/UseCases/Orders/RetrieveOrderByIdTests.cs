@@ -1,4 +1,4 @@
-﻿using Application.UseCases.Orders.GetOrder;
+﻿using Application.UseCases.Orders.RetrieveOrderById;
 using Domain.Enums;
 using Domain.Models;
 using Domain.Repository.Interfaces;
@@ -8,27 +8,27 @@ using NSubstitute;
 
 namespace UnitTests.Application.UseCases.Orders
 {
-    public class GetOrderUseCaseTests
+    public class RetrieveOrderByIdTests
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ILogger<GetOrderUseCase> _logger;
-        private readonly GetOrderUseCase _getOrderUseCase;
+        private readonly ILogger<RetrieveOrderById> _logger;
+        private readonly RetrieveOrderById _retrieveOrderByIdUseCase;
 
-        public GetOrderUseCaseTests()
+        public RetrieveOrderByIdTests()
         {
             _orderRepository = Substitute.For<IOrderRepository>();
-            _logger = Substitute.For<ILogger<GetOrderUseCase>>();
-            _getOrderUseCase = new GetOrderUseCase(_orderRepository, _logger);
+            _logger = Substitute.For<ILogger<RetrieveOrderById>>();
+            _retrieveOrderByIdUseCase = new RetrieveOrderById(_orderRepository, _logger);
         }
 
         [Fact]
         public async Task Handle_ShouldReturnOrder_WhenUserRoleIsAdmin()
         {
-            var input = new GetOrderInput { UserId = Guid.NewGuid(), OrderId = Guid.NewGuid(), UserRole = UserRole.Admin };
+            var input = new RetrieveOrderByIdInput { UserId = Guid.NewGuid(), OrderId = Guid.NewGuid(), UserRole = UserRole.Admin };
             var order = GetMockOrder();
             _orderRepository.GetOrderByIdAsync(input.OrderId).Returns(order);
 
-            var result = await _getOrderUseCase.Handle(input, CancellationToken.None);
+            var result = await _retrieveOrderByIdUseCase.Handle(input, CancellationToken.None);
 
             result.Should().Be(order);
         }
@@ -39,11 +39,11 @@ namespace UnitTests.Application.UseCases.Orders
         public async Task Handle_ShouldReturnOrder_WhenUserRoleIsSellerAndOrderBelongsToRole(UserRole role)
         {
             var id = Guid.NewGuid();
-            var input = new GetOrderInput { UserId = id, OrderId = Guid.NewGuid(), UserRole = role };
+            var input = new RetrieveOrderByIdInput { UserId = id, OrderId = Guid.NewGuid(), UserRole = role };
             var order = role == UserRole.Seller ? GetMockOrder(sellerId: id) : GetMockOrder(clientId: id);
             _orderRepository.GetOrderByIdAsync(input.OrderId).Returns(order);
 
-            var result = await _getOrderUseCase.Handle(input, CancellationToken.None);
+            var result = await _retrieveOrderByIdUseCase.Handle(input, CancellationToken.None);
 
             result.Should().Be(order);
         }
@@ -54,11 +54,11 @@ namespace UnitTests.Application.UseCases.Orders
         public async Task Handle_ShouldReturnNull_WhenUserRoleIsSellerAndOrderDoesNotBelongToRole(UserRole role)
         {
             var id = Guid.NewGuid();
-            var input = new GetOrderInput { UserId = id, OrderId = Guid.NewGuid(), UserRole = role };
+            var input = new RetrieveOrderByIdInput { UserId = id, OrderId = Guid.NewGuid(), UserRole = role };
             var order = GetMockOrder();
             _orderRepository.GetOrderByIdAsync(input.OrderId).Returns(order);
 
-            var result = await _getOrderUseCase.Handle(input, CancellationToken.None);
+            var result = await _retrieveOrderByIdUseCase.Handle(input, CancellationToken.None);
 
             result.Should().BeNull();
         }
