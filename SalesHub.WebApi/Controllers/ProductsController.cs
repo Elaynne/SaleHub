@@ -1,5 +1,5 @@
-using Application.UseCases.Books.RetrieBookDetails;
-using Application.UseCases.Books.GetBooks;
+using Application.UseCases.Books.RetrieveBookById;
+using Application.UseCases.Books.RetrieveAllBooks;
 using Application.UseCases.Books.CreateBook;
 using Application.UseCases.Books.DeleteBook;
 using Application.UseCases.Books.UpdateBook;
@@ -27,7 +27,7 @@ public class ProductsController : ControllerBase
     [Authorize(Roles = "Admin, Seller")]
     public async Task<ActionResult<IEnumerable<Book>>> GetAll()
     {
-        var input = new GetBooksInput()
+        var input = new RetrieveAllBooksInput()
         {
             UserId = GetUserIdFromContext(),
             UserRole = GetUserRoleFromContext()
@@ -42,7 +42,7 @@ public class ProductsController : ControllerBase
     [Authorize(Roles = "Admin, Seller")]
     public async Task<ActionResult<Book>> GetBook(Guid id)
     {
-        var input = new RetrieBookDetailsInput()
+        var input = new RetrieveBookByIdInput()
         {
             UserId = GetUserIdFromContext(),
             BookId = id

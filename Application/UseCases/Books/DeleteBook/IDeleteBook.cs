@@ -2,7 +2,7 @@
 
 namespace Application.UseCases.Books.DeleteBook
 {
-    public interface IDeleteBookUseCase : IRequestHandler<DeleteBookInput, bool>
+    public interface IDeleteBook : IRequestHandler<DeleteBookInput, bool>
     {
     }
 }

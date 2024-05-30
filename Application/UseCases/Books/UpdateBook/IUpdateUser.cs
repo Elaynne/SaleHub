@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.UseCases.Books.UpdateBook
 {
-    public interface IUpdateBookUseCase : IRequestHandler<UpdateBookInput, Book>
+    public interface IUpdateBook : IRequestHandler<UpdateBookInput, Book>
     {
     }
 }

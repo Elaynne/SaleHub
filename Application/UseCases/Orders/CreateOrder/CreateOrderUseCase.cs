@@ -1,4 +1,4 @@
-﻿using Application.UseCases.Books.RetrieBookDetails;
+﻿using Application.UseCases.Books.RetrieveBookById;
 using Domain.Cache;
 using Domain.Enums;
 using Domain.Models;
@@ -12,14 +12,14 @@ namespace Application.UseCases.Orders.CreateOrder
     {
         private readonly IOrderRepository _orderRepository;
         private readonly ILogger<CreateOrderUseCase> _logger;
-        private readonly IRetrieBookDetails _getBookUseCase;
+        private readonly IRetrieveBookById _getBookUseCase;
         private readonly ICacheService<Book> _cacheService;
         private readonly List<Book> _fetchedItems;
         private readonly Dictionary<Guid, Book> _fetchFinalList;
 
         public CreateOrderUseCase(IOrderRepository orderRepository,
             ILogger<CreateOrderUseCase> logger,
-            IRetrieBookDetails getBookUseCase,
+            IRetrieveBookById getBookUseCase,
             ICacheService<Book> cacheService)
         {
             _orderRepository = orderRepository;
@@ -51,7 +51,7 @@ namespace Application.UseCases.Orders.CreateOrder
             foreach (var item in request.OrderItems)
             {
                 try {
-                    var responseBook = await _getBookUseCase.Handle(new RetrieBookDetailsInput()
+                    var responseBook = await _getBookUseCase.Handle(new RetrieveBookByIdInput()
                     {
                         UserId = request.SellerId,
                         BookId = item.BookId

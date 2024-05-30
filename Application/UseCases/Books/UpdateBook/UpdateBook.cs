@@ -3,11 +3,11 @@ using Domain.Repository.Interfaces;
 
 namespace Application.UseCases.Books.UpdateBook
 {
-    public class UpdateBookUseCase : IUpdateBookUseCase
+    public class UpdateBook : IUpdateBook
     {
         private readonly IBookRepository _bookRepository;
 
-        public UpdateBookUseCase(IBookRepository bookRepository)
+        public UpdateBook(IBookRepository bookRepository)
         {
             _bookRepository = bookRepository;
         }

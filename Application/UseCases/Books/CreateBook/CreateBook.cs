@@ -3,11 +3,11 @@ using Domain.Repository.Interfaces;
 
 namespace Application.UseCases.Books.CreateBook
 {
-    public class CreateBookUseCase : ICreateBookUseCase
+    public class CreateBook : ICreateBook
     {
         private readonly IBookRepository _bookRepository;
 
-        public CreateBookUseCase(IBookRepository bookRepository)
+        public CreateBook(IBookRepository bookRepository)
         {
             _bookRepository = bookRepository;
         }

@@ -1,9 +1,9 @@
 ﻿using Domain.Models;
 using MediatR;
 
-namespace Application.UseCases.Books.RetrieBookDetails
+namespace Application.UseCases.Books.RetrieveBookById
 {
-    public class RetrieBookDetailsInput : IRequest<Book>
+    public class RetrieveBookByIdInput : IRequest<Book>
     {
         public Guid UserId { get; set; }
 

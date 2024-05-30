@@ -2,11 +2,11 @@
 
 namespace Application.UseCases.Books.DeleteBook
 {
-    public class DeleteBookUseCase : IDeleteBookUseCase
+    public class DeleteBook : IDeleteBook
     {
 
         private readonly IBookRepository _bookRepository;
-        public DeleteBookUseCase(IBookRepository bookRepository)
+        public DeleteBook(IBookRepository bookRepository)
         {
             _bookRepository = bookRepository;
         }
