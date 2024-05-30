@@ -1,4 +1,4 @@
-using Application.UseCases.Books.GetBook;
+using Application.UseCases.Books.RetrieBookDetails;
 using Application.UseCases.Books.GetBooks;
 using Application.UseCases.Books.CreateBook;
 using Application.UseCases.Books.DeleteBook;
@@ -42,7 +42,7 @@ public class ProductsController : ControllerBase
     [Authorize(Roles = "Admin, Seller")]
     public async Task<ActionResult<Book>> GetBook(Guid id)
     {
-        var input = new GetBookInput()
+        var input = new RetrieBookDetailsInput()
         {
             UserId = GetUserIdFromContext(),
             BookId = id
