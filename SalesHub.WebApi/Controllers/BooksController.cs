@@ -13,7 +13,7 @@ using Domain.Enums;
 namespace SalesHub.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/products/[controller]")]
 [RoleDiscoveryFilter]
 public class BooksController : ControllerBase
 {

@@ -25,16 +25,16 @@ namespace UnitTests.Application.UseCases.Orders
        
         public CreateOrderUseCaseTests()
         {
-            _request = new CreateOrderInput()
-             {
-                UserId = Guid.NewGuid(),
-                OrderItems = _orderItems
-            };
-
             _orderItems = new List<OrderItem>
             {
                 new OrderItem { BookId = Guid.NewGuid(), Quantity = 2},
                 new OrderItem { BookId = Guid.NewGuid(), Quantity = 3}
+            };
+
+            _request = new CreateOrderInput()
+             {
+                UserId = Guid.NewGuid(),
+                OrderItems = _orderItems
             };
 
             _orderRepository = Substitute.For<IOrderRepository>();

@@ -56,7 +56,7 @@ namespace SalesHub.WebApi.Controllers
             return Ok(order);
         }
 
-        [HttpPost(Name = "CreateOrder")]
+        [HttpPost("send", Name = "CreateOrder")]
         [Authorize(Roles = "Admin, Seller")]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderViewModel viewModel)
         {
