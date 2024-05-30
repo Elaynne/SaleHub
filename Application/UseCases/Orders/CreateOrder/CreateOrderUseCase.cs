@@ -40,8 +40,10 @@ namespace Application.UseCases.Orders.CreateOrder
                 ClientId = request.ClientId,
                 SellerId = request.SellerId,
                 OrderItems = request.OrderItems,
-                OrderDate = request.OrderDate,
-                Status = OrderStatus.Pending
+                CreatedAt = request.CreatedAt,
+                Status = OrderStatus.Pending,
+                OrderStatusDescription = OrderStatus.Pending.ToString(),
+                UpdatedAt = request.CreatedAt
             };
 
             var totalPrice = 0m;

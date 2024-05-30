@@ -19,9 +19,6 @@ namespace Infrastructure.Repositories.OrderRepository
 
         public async Task<Order> AddOrderAsync(Order order)
         {
-            order.OrderId = Guid.NewGuid();
-            order.OrderDate = DateTime.UtcNow;
-
             _memoryCache.Set($"Order_{order.OrderId}", order, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
             AppendDataOnCache(order, CacheKeys.OrdersKey, order.OrderId, ExpirationTimeInMinutes);
 

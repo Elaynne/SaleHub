@@ -60,7 +60,7 @@ namespace SalesHub.WebApi.Controllers
                 SellerId = GetUserIdFromContext(),
                 ClientId = viewModel.CLientId,
                 OrderItems = viewModel.OrderItems,
-                OrderDate = DateTime.Now
+                CreatedAt = DateTime.Now
             };
 
             var order = await _mediator.Send(input).ConfigureAwait(false);

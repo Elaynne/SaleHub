@@ -8,7 +8,7 @@ namespace Application.UseCases.Orders.CreateOrder
         public Guid ClientId { get; set; }
         public Guid SellerId { get; set; }
         public List<OrderItem> OrderItems { get; set; }
-        public DateTime OrderDate { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public CreateOrderInput()
         {

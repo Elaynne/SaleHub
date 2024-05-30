@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.UseCases.Orders.CancelOrder
 {
-    public interface ICanceloOrderUseCase : IRequestHandler<CancelOrderInput, Order>
+    public interface ICanceloOrderUseCase : IRequestHandler<CancelOrderInput, CancelOrderOutput>
     {
     }
 }
