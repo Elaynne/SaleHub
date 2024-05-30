@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SalesHub.WebApi.ActionFilterAtributes;
+using Domain.Enums;
 
 namespace SalesHub.WebApi.Controllers;
 
@@ -28,7 +29,8 @@ public class BooksController : ControllerBase
     {
         var input = new GetBooksInput()
         {
-            UserId = GetUserIdFromContext()
+            UserId = GetUserIdFromContext(),
+            UserRole = GetUserRoleFromContext()
         };
 
         var books = await _mediator.Send(input).ConfigureAwait(false);
@@ -80,4 +82,5 @@ public class BooksController : ControllerBase
         return NotFound();
     }
     private Guid GetUserIdFromContext() => Guid.Parse(HttpContext.Items["userId"].ToString());
+    private UserRole GetUserRoleFromContext() => (UserRole)HttpContext.Items["userRole"];
 }

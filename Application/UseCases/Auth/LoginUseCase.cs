@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
 using Domain.Enums;
 using Domain.Models;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Application.UseCases.Auth
 {
@@ -16,16 +17,22 @@ namespace Application.UseCases.Auth
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
         private readonly IBookRepository _bookRepository;
+        private readonly IMemoryCache _memoryCache;
 
         public LoginUseCase(
             IUserRepository userRepository,
             IConfiguration configuration,
-            IBookRepository bookRepository)
+            IBookRepository bookRepository,
+            IMemoryCache memoryCache)
         {
             _userRepository = userRepository;
             _configuration = configuration;
             _bookRepository = bookRepository;
-            SetupMock();
+            _memoryCache = memoryCache;
+
+            _memoryCache.TryGetValue("mock_loaded", out bool mockLoaded);
+            if (!mockLoaded)
+                SetupMock();
         }
 
         public async Task<string?> Handle(LoginInput request, CancellationToken cancellationToken)
@@ -82,6 +89,8 @@ namespace Application.UseCases.Auth
             {
                 _bookRepository.AddBookAsync(book);
             }
+
+            _memoryCache.Set("mock_loaded", true);
         }
         private List<Domain.Models.User> GetUsersMock()
         {

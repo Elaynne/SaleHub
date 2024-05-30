@@ -25,15 +25,9 @@ namespace Infrastructure.Cache
             Func<Task<Dictionary<Guid, T>>> fetchFinalListFunc, string finalListKey, string domainKey)
         {
             // Backup original state
-            var originalItems = new Dictionary<Guid, T>();
-            foreach (var itemId in itemIds)
-            {
-                if (_memoryCache.TryGetValue($"{domainKey}_{itemId}", out T cachedItem))
-                {
-                    originalItems[itemId] = cachedItem;
-                }
-            }
-
+           
+            _memoryCache.TryGetValue($"{finalListKey}", out Dictionary<Guid, T> originalItems);
+             
             var continueUpdate = await UpdateIndividualItem<T>(itemIds, fetchItemFunc, 
                 domainKey, originalItems).ConfigureAwait(false);
 
@@ -69,7 +63,14 @@ namespace Infrastructure.Cache
             try
             {
                 var finalList = await fetchFinalListFunc();
-                _memoryCache.Set(finalListKey, finalList, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
+                var originalItemsCopy = originalItems;
+
+                foreach (var item in finalList)
+                {
+                    originalItemsCopy[item.Key] = item.Value;
+                }
+
+                _memoryCache.Set(finalListKey, originalItemsCopy, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
                 return true;
             }
             catch

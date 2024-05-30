@@ -1,4 +1,5 @@
 ﻿using Application.UseCases.Orders.CreateOrder;
+using Application.UseCases.Orders.GetOrder;
 using Application.UseCases.Orders.GetOrders;
 using AutoMapper;
 using Domain.Enums;
@@ -39,13 +40,29 @@ namespace SalesHub.WebApi.Controllers
             return Ok(orders);
         }
 
+        [HttpGet("{id}", Name = "GetOrder")]
+        public async Task<ActionResult<Order>> GetOrder(Guid id)
+        {
+            var order = await _mediator.Send(new GetOrderInput { 
+                OrderId = id,
+                UserId = GetUserIdFromContext(),
+                UserRole = GetUserRoleFromContext()
+            }).ConfigureAwait(false);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return Ok(order);
+        }
+
         [HttpPost(Name = "CreateOrder")]
         [Authorize(Roles = "Admin, Seller")]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderViewModel viewModel)
         {
             var input = _mapper.Map<CreateOrderInput>(viewModel);
             input.UserId = GetUserIdFromContext();
-            
+
             var order = await _mediator.Send(input).ConfigureAwait(false);
 
             if (order is null)
@@ -53,6 +70,13 @@ namespace SalesHub.WebApi.Controllers
 
             return Ok(order);
         }
+
+        //[HttpPut(Name = "UpdateOrder")]
+        //public async Task<ActionResult<Order>> UpdateOrder(UpdateOrderInput input)
+        //{
+        //    var order = await _mediator.Send(input).ConfigureAwait(false);
+        //    return Ok(order);
+        //}
 
         private UserRole GetUserRoleFromContext() => (UserRole)HttpContext.Items["userRole"];
         private Guid GetUserIdFromContext() => Guid.Parse(HttpContext.Items["userId"].ToString());
