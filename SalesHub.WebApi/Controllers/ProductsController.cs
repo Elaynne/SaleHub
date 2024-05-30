@@ -13,12 +13,12 @@ using Domain.Enums;
 namespace SalesHub.WebApi.Controllers;
 
 [ApiController]
-[Route("api/products/[controller]")]
+[Route("api/[controller]")]
 [RoleDiscoveryFilter]
-public class BooksController : ControllerBase
+public class ProductsController : ControllerBase
 {
     private readonly IMediator _mediator;
-    public BooksController(IMediator mediator)
+    public ProductsController(IMediator mediator)
     {
         _mediator = mediator;
     }
@@ -72,10 +72,14 @@ public class BooksController : ControllerBase
 
         return Ok(book);
     }
-    [HttpDelete(Name = "DeleteBook")]
+    [HttpDelete("{id}", Name = "DeleteBook")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<Book>> DeleteBook(DeleteBookInput input)
+    public async Task<ActionResult<Book>> DeleteBook(Guid id)
     {
+        var input = new DeleteBookInput()
+        {
+            Id = id
+        };
         var isDeleted = await _mediator.Send(input).ConfigureAwait(false);
         if(isDeleted)
             return Ok();

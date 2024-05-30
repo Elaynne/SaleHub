@@ -6,7 +6,7 @@ using Application.UseCases.Books.UpdateBook;
 using Application.UseCases.Orders.CreateOrder;
 using Application.UseCases.Orders.GetOrder;
 using Application.UseCases.Orders.GetOrders;
-using Application.UseCases.Orders.UpdateOrderStatus;
+using Application.UseCases.Orders.CancelOrder;
 using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
 using Application.UseCases.Users.GetUsers;
@@ -16,9 +16,9 @@ using Domain.Cache;
 using Domain.Models;
 using Domain.Repository.Interfaces;
 using Infrastructure.Cache;
-using Infrastructure.Repository.BookRepository;
-using Infrastructure.Repository.OrderRepository;
-using Infrastructure.Repository.User;
+using Infrastructure.Repositories.BookRepository;
+using Infrastructure.Repositories.OrderRepository;
+using Infrastructure.Repositories.User;
 
 namespace SalesHub.WebApi.DependencyInjection
 {
@@ -42,7 +42,7 @@ namespace SalesHub.WebApi.DependencyInjection
             services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
             services.AddScoped<IGetOrdersUseCase, GetOrdersUseCase>();
             services.AddScoped<IGetOrderUseCase, GetOrderUseCase>();
-            services.AddScoped<IUpdateOrderStatusUseCase, UpdateOrderStatusUseCase>();
+            services.AddScoped<ICanceloOrderUseCase, CancelOrderUseCase>();
             return services;
 
         }

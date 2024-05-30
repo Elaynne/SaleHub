@@ -5,7 +5,7 @@ using Infrastructure.Common;
 using Infrastructure.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Infrastructure.Repository.OrderRepository
+namespace Infrastructure.Repositories.OrderRepository
 {
     public class OrderRepository : BaseRepository, IOrderRepository
     {

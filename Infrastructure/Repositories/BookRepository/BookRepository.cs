@@ -5,7 +5,7 @@ using Infrastructure.Common;
 using Infrastructure.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Infrastructure.Repository.BookRepository;
+namespace Infrastructure.Repositories.BookRepository;
 public class BookRepository : BaseRepository, IBookRepository
 {
     private readonly IMemoryCache _memoryCache;

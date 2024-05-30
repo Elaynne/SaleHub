@@ -4,7 +4,7 @@ using Infrastructure.Common;
 using Infrastructure.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Infrastructure.Repository.User;
+namespace Infrastructure.Repositories.User;
 public class UserRepository : BaseRepository, IUserRepository
 {
     private readonly IMemoryCache _memoryCache;

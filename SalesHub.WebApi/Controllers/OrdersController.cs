@@ -1,7 +1,7 @@
 ﻿using Application.UseCases.Orders.CreateOrder;
 using Application.UseCases.Orders.GetOrder;
 using Application.UseCases.Orders.GetOrders;
-using Application.UseCases.Orders.UpdateOrderStatus;
+using Application.UseCases.Orders.CancelOrder;
 using AutoMapper;
 using Domain.Enums;
 using Domain.Models;
@@ -55,7 +55,7 @@ namespace SalesHub.WebApi.Controllers
             return Ok(order);
         }
 
-        [HttpPost("send", Name = "CreateOrder")]
+        [HttpPost(Name = "CreateOrder")]
         [Authorize(Roles = "Admin, Seller")]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderViewModel viewModel)
         {
@@ -70,12 +70,15 @@ namespace SalesHub.WebApi.Controllers
             return Ok(order);
         }
 
-        [HttpPut("OrderStatus",Name = "UpdateOrder")]
+        [HttpDelete("{id}", Name = "CancelOrder")]
         [Authorize(Roles = "Admin, Seller")]
-        public async Task<ActionResult<Order>> UpdateOrder(UpdateOrderStatusViewModel viewModel)
+        public async Task<ActionResult<Order>> CanceloOrder(Guid id)
         {
-            var input = _mapper.Map<UpdateOrderStatusInput>(viewModel);
-            input.UserId = GetUserIdFromContext();
+            var input = new CancelOrderInput()
+            {
+                OrderId = id,
+                UserId = GetUserIdFromContext()
+            };
 
             var order = await _mediator.Send(input).ConfigureAwait(false);
             return Ok(order);

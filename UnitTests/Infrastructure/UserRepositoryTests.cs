@@ -1,7 +1,7 @@
 ﻿using Domain.Models;
 using FluentAssertions;
 using Infrastructure.Exceptions;
-using Infrastructure.Repository.User;
+using Infrastructure.Repositories.User;
 using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
 
