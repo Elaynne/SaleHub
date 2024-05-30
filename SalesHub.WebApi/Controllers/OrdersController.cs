@@ -1,6 +1,7 @@
 ﻿using Application.UseCases.Orders.CreateOrder;
 using Application.UseCases.Orders.GetOrder;
 using Application.UseCases.Orders.GetOrders;
+using Application.UseCases.Orders.UpdateOrderStatus;
 using AutoMapper;
 using Domain.Enums;
 using Domain.Models;
@@ -8,7 +9,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SalesHub.WebApi.ActionFilterAtributes;
-using System.Data;
 
 namespace SalesHub.WebApi.Controllers
 {
@@ -28,7 +28,6 @@ namespace SalesHub.WebApi.Controllers
         }
 
         [HttpGet(Name = "GetAllOrders")]
-        [Authorize(Roles = "Admin, Seller")]
         public async Task<ActionResult<IEnumerable<Order>>> GetAll()
         {
             var input = new GetOrdersInput()
@@ -71,12 +70,16 @@ namespace SalesHub.WebApi.Controllers
             return Ok(order);
         }
 
-        //[HttpPut(Name = "UpdateOrder")]
-        //public async Task<ActionResult<Order>> UpdateOrder(UpdateOrderInput input)
-        //{
-        //    var order = await _mediator.Send(input).ConfigureAwait(false);
-        //    return Ok(order);
-        //}
+        [HttpPut("OrderStatus",Name = "UpdateOrder")]
+        [Authorize(Roles = "Admin, Seller")]
+        public async Task<ActionResult<Order>> UpdateOrder(UpdateOrderStatusViewModel viewModel)
+        {
+            var input = _mapper.Map<UpdateOrderStatusInput>(viewModel);
+            input.UserId = GetUserIdFromContext();
+
+            var order = await _mediator.Send(input).ConfigureAwait(false);
+            return Ok(order);
+        }
 
         private UserRole GetUserRoleFromContext() => (UserRole)HttpContext.Items["userRole"];
         private Guid GetUserIdFromContext() => Guid.Parse(HttpContext.Items["userId"].ToString());

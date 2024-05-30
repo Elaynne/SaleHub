@@ -7,6 +7,7 @@ using Application.UseCases.Books.UpdateBook;
 using Application.UseCases.Orders.CreateOrder;
 using Application.UseCases.Orders.GetOrder;
 using Application.UseCases.Orders.GetOrders;
+using Application.UseCases.Orders.UpdateOrderStatus;
 using Application.UseCases.Users.CreateUser;
 using Application.UseCases.Users.GetUser;
 using Application.UseCases.Users.GetUsers;
@@ -41,7 +42,7 @@ namespace SalesHub.WebApi.DependencyInjection
             services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
             services.AddScoped<IGetOrdersUseCase, GetOrdersUseCase>();
             services.AddScoped<IGetOrderUseCase, GetOrderUseCase>();
-            //services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
+            services.AddScoped<IUpdateOrderStatusUseCase, UpdateOrderStatusUseCase>();
             return services;
 
         }

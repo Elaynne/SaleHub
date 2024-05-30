@@ -1,5 +1,6 @@
 ﻿using Application.UseCases.Books.CreateBook;
 using Application.UseCases.Orders.CreateOrder;
+using Application.UseCases.Orders.UpdateOrderStatus;
 using Application.UseCases.Users.CreateUser;
 using AutoMapper;
 using Domain.Enums;
@@ -23,6 +24,7 @@ namespace Application.MappingProfiles
                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => OrderStatus.Pending));
 
             CreateMap<CreateOrderViewModel, CreateOrderInput>();
+            CreateMap<UpdateOrderStatusViewModel, UpdateOrderStatusInput>();
         }
     }
 }
