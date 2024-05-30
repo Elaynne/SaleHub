@@ -36,7 +36,7 @@ namespace Application.UseCases.Orders.CreateOrder
 
             var order = new Order()
             {
-                Id = Guid.NewGuid(),
+                OrderId = Guid.NewGuid(),
                 ClientId = request.ClientId,
                 SellerId = request.SellerId,
                 OrderItems = request.OrderItems,

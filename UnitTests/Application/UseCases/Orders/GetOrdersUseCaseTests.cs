@@ -70,9 +70,9 @@ namespace UnitTests.Application.UseCases.Orders
         {
             return new List<Order>
         {
-            new Order { Id = Guid.NewGuid(), SellerId = Guid.NewGuid(), ClientId = Guid.NewGuid() },
-            new Order { Id = Guid.NewGuid(), SellerId = Guid.NewGuid(), ClientId = Guid.NewGuid() },
-            new Order { Id = Guid.NewGuid(), SellerId = Guid.NewGuid(), ClientId = Guid.NewGuid() }
+            new Order { OrderId = Guid.NewGuid(), SellerId = Guid.NewGuid(), ClientId = Guid.NewGuid() },
+            new Order { OrderId = Guid.NewGuid(), SellerId = Guid.NewGuid(), ClientId = Guid.NewGuid() },
+            new Order { OrderId = Guid.NewGuid(), SellerId = Guid.NewGuid(), ClientId = Guid.NewGuid() }
         };
         }
     }

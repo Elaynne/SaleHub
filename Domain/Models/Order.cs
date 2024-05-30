@@ -4,7 +4,7 @@ namespace Domain.Models
 {
     public class Order
     {
-        public Guid Id { get; set; }
+        public Guid OrderId { get; set; }
         public Guid ClientId { get; set; }
         public Guid SellerId { get; set; }
         public List<OrderItem> OrderItems { get; set; }

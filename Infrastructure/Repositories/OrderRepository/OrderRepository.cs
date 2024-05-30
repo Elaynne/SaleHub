@@ -19,11 +19,11 @@ namespace Infrastructure.Repositories.OrderRepository
 
         public async Task<Order> AddOrderAsync(Order order)
         {
-            order.Id = Guid.NewGuid();
+            order.OrderId = Guid.NewGuid();
             order.OrderDate = DateTime.UtcNow;
 
-            _memoryCache.Set($"Order_{order.Id}", order, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
-            AppendDataOnCache(order, CacheKeys.OrdersKey, order.Id, ExpirationTimeInMinutes);
+            _memoryCache.Set($"Order_{order.OrderId}", order, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
+            AppendDataOnCache(order, CacheKeys.OrdersKey, order.OrderId, ExpirationTimeInMinutes);
 
             return order;
         }
@@ -45,13 +45,13 @@ namespace Infrastructure.Repositories.OrderRepository
 
         public async Task<Order> UpdateOrderAsync(Order order)
         {
-            if (_memoryCache.TryGetValue($"Order_{order.Id}", out Order cachedOrder))
+            if (_memoryCache.TryGetValue($"Order_{order.OrderId}", out Order cachedOrder))
             {
-                _memoryCache.Set($"Order_{order.Id}", order, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
-                UpdateDataOnCache(order, order.Id, CacheKeys.OrdersKey, ExpirationTimeInMinutes);
+                _memoryCache.Set($"Order_{order.OrderId}", order, TimeSpan.FromMinutes(ExpirationTimeInMinutes));
+                UpdateDataOnCache(order, order.OrderId, CacheKeys.OrdersKey, ExpirationTimeInMinutes);
                 return order;
             }
-            throw new NotFoundException($"Cannot update order data. Order {order.Id} not found");
+            throw new NotFoundException($"Cannot update order data. Order {order.OrderId} not found");
         }
 
         public async Task<bool> DeleteOrderAsync(Guid id)

@@ -51,7 +51,7 @@ namespace UnitTests.Application.UseCases.Orders
         [Fact]
         public async Task Handle_ShouldCreateOrder_WhenAllItemsInStock()
         {
-            var order = new Order { Id = Guid.NewGuid() };
+            var order = new Order { OrderId = Guid.NewGuid() };
             var books = _orderItems.Select(x => new Book { Id = x.BookId, Stock = 10 }).ToList();
 
             foreach (var book in books)
@@ -71,7 +71,7 @@ namespace UnitTests.Application.UseCases.Orders
             var result = await _useCase.Handle(_request, CancellationToken.None);
 
             Assert.NotNull(result);
-            Assert.Equal(order.Id, result.Id);
+            Assert.Equal(order.OrderId, result.OrderId);
             await _orderRepository.Received(1).AddOrderAsync(Arg.Any<Order>());
         }
 
@@ -107,7 +107,7 @@ namespace UnitTests.Application.UseCases.Orders
         [Fact]
         public async Task Handle_ShouldReturnNull_WhenCacheUpdateFails()
         {
-            var order = new Order { Id = Guid.NewGuid(),};
+            var order = new Order { OrderId = Guid.NewGuid(),};
             var books = _orderItems.Select(x => new Book { Id = x.BookId, Stock = 10 }).ToList();
 
             foreach (var book in books)

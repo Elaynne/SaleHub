@@ -67,7 +67,7 @@ namespace UnitTests.Application.UseCases.Orders
         {
             return new Order
             {
-                Id = Guid.NewGuid(),
+                OrderId = Guid.NewGuid(),
                 SellerId = sellerId ?? Guid.NewGuid(),
                 ClientId = clientId ?? Guid.NewGuid()
             };
