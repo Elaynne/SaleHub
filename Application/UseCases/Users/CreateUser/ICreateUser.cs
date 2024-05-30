@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.UseCases.Users.CreateUser
 {
-    public interface ICreateUserUseCase : IRequestHandler<CreateUserInput, User>
+    public interface ICreateUser : IRequestHandler<CreateUserInput, User>
     {
     }
 }

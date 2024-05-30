@@ -1,6 +1,6 @@
 ﻿using Application.UseCases.Users.CreateUser;
-using Application.UseCases.Users.GetUser;
-using Application.UseCases.Users.GetUsers;
+using Application.UseCases.Users.RetrieveAllUsers;
+using Application.UseCases.Users.RetrieveUserById;
 using Application.UseCases.Users.UpdateUser;
 using Domain.Enums;
 using Domain.Models;
@@ -31,7 +31,7 @@ namespace UnitTests.WebApi.Controllers
         public async Task GetAll_ReturnsOkResult_WithUsers()
         {
             var users = new List<User> { new User() };
-            _mediator.Send(Arg.Any<GetUsersInput>()).Returns(users);
+            _mediator.Send(Arg.Any<RetrieveAllUsersInput>()).Returns(users);
 
             var result = await _controller.GetAll();
 
@@ -45,7 +45,7 @@ namespace UnitTests.WebApi.Controllers
         {
             var userId = Guid.NewGuid();
             var user = new User { Id = userId };
-            _mediator.Send(Arg.Any<GetUserInput>()).Returns(user);
+            _mediator.Send(Arg.Any<RetrieveUserByIdInput>()).Returns(user);
 
             var result = await _controller.GetUser(userId);
 
@@ -59,7 +59,7 @@ namespace UnitTests.WebApi.Controllers
         public async Task GetUser_WithInvalidId_ReturnsNotFoundResult()
         {
             var userId = Guid.NewGuid();
-            _mediator.Send(Arg.Any<GetUserInput>()).Returns((User)null);
+            _mediator.Send(Arg.Any<RetrieveUserByIdInput>()).Returns((User)null);
 
             var result = await _controller.GetUser(userId);
 

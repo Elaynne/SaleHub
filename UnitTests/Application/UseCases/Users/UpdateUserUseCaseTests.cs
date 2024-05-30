@@ -20,7 +20,7 @@ namespace UnitTests.Application.UseCases.Users
         public async Task Handle_ReturnsUpdatedUser()
         {
             _userRepository.UpdateUserAsync(Arg.Any<User>()).Returns(_user);
-            var updateUserUseCase = new UpdateUserUseCase(_userRepository);
+            var updateUserUseCase = new UpdateUser(_userRepository);
 
             var result = await updateUserUseCase.Handle(_request, CancellationToken.None);
 
@@ -31,7 +31,7 @@ namespace UnitTests.Application.UseCases.Users
         public async Task Handle_ThrowsException_WhenUserRepositoryThrows()
         {
             _userRepository.UpdateUserAsync(Arg.Any<User>()).Throws(new Exception("Repository exception"));
-            var updateUserUseCase = new UpdateUserUseCase(_userRepository);
+            var updateUserUseCase = new UpdateUser(_userRepository);
 
             Func<Task> act = async () => await updateUserUseCase.Handle(_request, CancellationToken.None);
 

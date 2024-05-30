@@ -10,7 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Application.UseCases.Users.Login
 {
-    public class LoginUseCase : ILoginUseCase
+    public class Login : ILogin
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
@@ -18,7 +18,7 @@ namespace Application.UseCases.Users.Login
         private readonly IBookRepository _bookRepository;
         private readonly IMemoryCache _memoryCache;
 
-        public LoginUseCase(
+        public Login(
             IUserRepository userRepository,
             IConfiguration configuration,
             IBookRepository bookRepository,

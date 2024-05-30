@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.UseCases.Users.UpdateUser
 {
-    public interface IUpdateUserUseCase : IRequestHandler<UpdateUserInput, User>
+    public interface IUpdateUser : IRequestHandler<UpdateUserInput, User>
     {
     }
 }

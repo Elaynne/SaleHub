@@ -3,11 +3,11 @@ using Domain.Repository.Interfaces;
 
 namespace Application.UseCases.Users.CreateUser
 {
-    public class CreateUserUseCase : ICreateUserUseCase
+    public class CreateUser : ICreateUser
     {
         private readonly IUserRepository _userRepository;
 
-        public CreateUserUseCase(IUserRepository userRepository)
+        public CreateUser(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

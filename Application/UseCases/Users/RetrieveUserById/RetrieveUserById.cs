@@ -4,20 +4,20 @@ using Domain.Models;
 using Domain.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace Application.UseCases.Users.GetUser
+namespace Application.UseCases.Users.RetrieveUserById
 {
-    public class GetUserUseCase : IGetUserUseCase
+    public class RetrieveUserById : IRetrieveUserById
     {
         private readonly IUserRepository _userRepository;
-        private readonly ILogger<GetUserUseCase> _logger;
-        public GetUserUseCase(IUserRepository userRepository,
-            ILogger<GetUserUseCase> logger)
+        private readonly ILogger<RetrieveUserById> _logger;
+        public RetrieveUserById(IUserRepository userRepository,
+            ILogger<RetrieveUserById> logger)
         {
             _userRepository = userRepository;
             _logger = logger;
         }
 
-        public async Task<User?> Handle(GetUserInput request, CancellationToken cancellationToken)
+        public async Task<User?> Handle(RetrieveUserByIdInput request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Getting user {UserId}", request.Id);
 

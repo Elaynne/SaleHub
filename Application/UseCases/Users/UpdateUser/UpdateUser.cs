@@ -4,11 +4,11 @@ using Domain.Repository.Interfaces;
 
 namespace Application.UseCases.Users.UpdateUser
 {
-    public class UpdateUserUseCase : IUpdateUserUseCase
+    public class UpdateUser : IUpdateUser
     {
         private readonly IUserRepository _userRepository;
 
-        public UpdateUserUseCase(IUserRepository userRepository)
+        public UpdateUser(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

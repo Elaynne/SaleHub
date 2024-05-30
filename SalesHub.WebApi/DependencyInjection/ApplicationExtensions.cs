@@ -8,8 +8,8 @@ using Application.UseCases.Orders.RetrieveAllOrders;
 using Application.UseCases.Orders.RetrieveOrderById;
 using Application.UseCases.Orders.CancelOrder;
 using Application.UseCases.Users.CreateUser;
-using Application.UseCases.Users.GetUser;
-using Application.UseCases.Users.GetUsers;
+using Application.UseCases.Users.RetrieveUserById;
+using Application.UseCases.Users.RetrieveAllUsers;
 using Application.UseCases.Users.Login;
 using Application.UseCases.Users.UpdateUser;
 using Domain.Cache;
@@ -26,12 +26,12 @@ namespace SalesHub.WebApi.DependencyInjection
     {
         public static IServiceCollection AddUseCases(this IServiceCollection services)
         { 
-            services.AddScoped<ICreateUserUseCase, CreateUserUseCase> ();
-            services.AddScoped<IGetUserUseCase, GetUserUseCase>();
-            services.AddScoped<IGetUsersUseCase, GetUsersUseCase>();
-            services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+            services.AddScoped<ICreateUser, CreateUser> ();
+            services.AddScoped<IRetrieveUserById, RetrieveUserById>();
+            services.AddScoped<IRetrieveAllUsers, RetrieveAllUsers>();
+            services.AddScoped<IUpdateUser, UpdateUser>();
 
-            services.AddScoped<ILoginUseCase, LoginUseCase>();
+            services.AddScoped<ILogin, Login>();
 
             services.AddScoped<ICreateBook, CreateBook>();
             services.AddScoped<IRetrieveBookById, RetrieveBookById>();
@@ -40,7 +40,7 @@ namespace SalesHub.WebApi.DependencyInjection
             services.AddScoped<IDeleteBook, DeleteBook>();
 
             services.AddScoped<ICreateOrder, CreateOrder>();
-            services.AddScoped<IRetrieveAllBooks, RetrieveAllBooks>();
+            services.AddScoped<IRetrieveAllOrders, RetrieveAllOrders>();
             services.AddScoped<IRetrieveOrderById, RetrieveOrderById>();
             services.AddScoped<ICanceloOrder, CancelOrder>();
             return services;

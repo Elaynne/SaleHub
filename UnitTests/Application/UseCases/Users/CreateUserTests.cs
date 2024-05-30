@@ -7,11 +7,11 @@ using Application.UseCases.Users.CreateUser;
 
 namespace UnitTests.Application.UseCases.Users
 {
-    public class CreateUserUseCaseTests
+    public class CreateUserTests
     {
         private IUserRepository _userRepository = Substitute.For<IUserRepository>();
         private CreateUserInput _request = new CreateUserInput();
-        public CreateUserUseCaseTests()
+        public CreateUserTests()
         {
             _request = new CreateUserInput { 
                 UserName = "ElaynneT", 
@@ -28,7 +28,7 @@ namespace UnitTests.Application.UseCases.Users
             };
 
             _userRepository.AddUserAsync(Arg.Any<User>()).Returns(user);
-            var createUserUseCase = new CreateUserUseCase(_userRepository);
+            var createUserUseCase = new CreateUser(_userRepository);
 
             var result = await createUserUseCase.Handle(_request, CancellationToken.None);
 
@@ -39,7 +39,7 @@ namespace UnitTests.Application.UseCases.Users
         public async Task Handle_ThrowsException_WhenUserRepositoryThrows()
         {
             _userRepository.AddUserAsync(Arg.Any<User>()).Throws(new Exception("Repository exception"));
-            var createUserUseCase = new CreateUserUseCase(_userRepository);
+            var createUserUseCase = new CreateUser(_userRepository);
 
             Func<Task> act = async () => await createUserUseCase.Handle(_request, CancellationToken.None);
 

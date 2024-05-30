@@ -1,6 +1,6 @@
 using Application.UseCases.Users.CreateUser;
-using Application.UseCases.Users.GetUser;
-using Application.UseCases.Users.GetUsers;
+using Application.UseCases.Users.RetrieveUserById;
+using Application.UseCases.Users.RetrieveAllUsers;
 using Application.UseCases.Users.Login;
 using Application.UseCases.Users.UpdateUser;
 using Domain.Enums;
@@ -37,7 +37,7 @@ public class UsersController : ControllerBase
     [Authorize(Roles = "Admin, Seller")]
     public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
-        var input = new GetUsersInput()
+        var input = new RetrieveAllUsersInput()
         {
             Role = GetUserRoleFromContext()
         };
@@ -52,7 +52,7 @@ public class UsersController : ControllerBase
     [Authorize(Roles = "Admin, Seller")]
     public async Task<ActionResult<User>> GetUser(Guid id)
     {
-        var input = new GetUserInput()
+        var input = new RetrieveUserByIdInput()
         { 
             Id = id,
             Role = GetUserRoleFromContext()

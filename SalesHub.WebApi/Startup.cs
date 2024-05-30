@@ -52,7 +52,7 @@ namespace SalesHub.WebApi
             services.AddRepositories();
             services.AddMediatR(config =>
             {
-                config.RegisterServicesFromAssembly(typeof(CreateUserUseCase).Assembly);
+                config.RegisterServicesFromAssembly(typeof(CreateUser).Assembly);
             });
             services.AddMemoryCache();
             services.AddAuthentication(options =>

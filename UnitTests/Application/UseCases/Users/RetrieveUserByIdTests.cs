@@ -3,20 +3,20 @@ using Domain.Models;
 using Domain.Repository.Interfaces;
 using NSubstitute;
 using FluentAssertions;
-using Application.UseCases.Users.GetUser;
+using Application.UseCases.Users.RetrieveUserById;
 using Microsoft.Extensions.Logging;
 
 namespace UnitTests.Application.UseCases.Users
 {
-    public class GetUserUseCaseTests
+    public class RetrieveUserByIdTests
     {
         private readonly IUserRepository _userRepository = Substitute.For<IUserRepository>();
-        private GetUserUseCase _getUserUseCase;
+        private RetrieveUserById _retrieveUserByIdUseCase;
         private readonly Guid _userId = Guid.NewGuid();
-        private readonly ILogger<GetUserUseCase> _logger = Substitute.For<ILogger<GetUserUseCase>>();
-        public GetUserUseCaseTests()
+        private readonly ILogger<RetrieveUserById> _logger = Substitute.For<ILogger<RetrieveUserById>>();
+        public RetrieveUserByIdTests()
         {
-            _getUserUseCase = new GetUserUseCase(_userRepository, _logger);
+            _retrieveUserByIdUseCase = new RetrieveUserById(_userRepository, _logger);
         }
         [Fact]
         public async Task Handle_AdminRole_ReturnsUser()
@@ -24,9 +24,9 @@ namespace UnitTests.Application.UseCases.Users
             var user = new User { Id = _userId, Role = UserRole.Admin };
             _userRepository.GetUserByIdAsync(_userId).Returns(user);
 
-            var request = new GetUserInput { Id = _userId, Role = UserRole.Admin };
+            var request = new RetrieveUserByIdInput { Id = _userId, Role = UserRole.Admin };
 
-            var result = await _getUserUseCase.Handle(request, CancellationToken.None);
+            var result = await _retrieveUserByIdUseCase.Handle(request, CancellationToken.None);
 
             result.Should().Be(user);
         }
@@ -37,9 +37,9 @@ namespace UnitTests.Application.UseCases.Users
             var user = new User { Id = _userId, Role = UserRole.Client, Active = true };
             _userRepository.GetUserByIdAsync(_userId).Returns(user);
 
-            var request = new GetUserInput { Id = _userId, Role = UserRole.Seller };
+            var request = new RetrieveUserByIdInput { Id = _userId, Role = UserRole.Seller };
 
-            var result = await _getUserUseCase.Handle(request, CancellationToken.None);
+            var result = await _retrieveUserByIdUseCase.Handle(request, CancellationToken.None);
 
             result.Should().Be(user);
         }
@@ -50,9 +50,9 @@ namespace UnitTests.Application.UseCases.Users
             var user = new User { Id = _userId, Role = UserRole.Client, Active = false };
             _userRepository.GetUserByIdAsync(_userId).Returns(user);
 
-            var request = new GetUserInput { Id = _userId, Role = UserRole.Seller };
+            var request = new RetrieveUserByIdInput { Id = _userId, Role = UserRole.Seller };
 
-            var result = await _getUserUseCase.Handle(request, CancellationToken.None);
+            var result = await _retrieveUserByIdUseCase.Handle(request, CancellationToken.None);
 
             result.Should().BeNull();
         }
@@ -63,9 +63,9 @@ namespace UnitTests.Application.UseCases.Users
             var user = new User { Id = _userId, Role = UserRole.Client, Active = true };
             _userRepository.GetUserByIdAsync(_userId).Returns(user);
 
-            var request = new GetUserInput { Id = _userId, Role = UserRole.Client }; 
+            var request = new RetrieveUserByIdInput { Id = _userId, Role = UserRole.Client }; 
 
-            var result = await _getUserUseCase.Handle(request, CancellationToken.None);
+            var result = await _retrieveUserByIdUseCase.Handle(request, CancellationToken.None);
 
             result.Should().BeNull();
         }

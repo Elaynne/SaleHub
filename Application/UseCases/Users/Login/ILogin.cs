@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.UseCases.Users.Login
 {
-    public interface ILoginUseCase : IRequestHandler<LoginInput, string?>
+    public interface ILogin : IRequestHandler<LoginInput, string?>
     {
     }
 }
