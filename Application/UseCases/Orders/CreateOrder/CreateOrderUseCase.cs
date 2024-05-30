@@ -90,26 +90,11 @@ namespace Application.UseCases.Orders.CreateOrder
                 _logger.LogInformation("Cache update failed and rollback completed.");
                 return null;
             }
-
-            // for each orderItem (book),
-            // getBook and validade stock,
-            //  if quantity > stock
-            //      then badrequest,
-            //  else
-            //      get SellPrice and calculate totalPrice
-            // send order
-            //  for each orderItem (book)
-            //      update stock quantity
-            //          if any failure then 
-            //      addOrder
         }
 
-        private async Task<Dictionary<Guid, Book>> FetchFinalListAsync()
+        private async Task<Dictionary<Guid, Book>> FetchFinalListAsync() => _fetchFinalList;
 
-            => _fetchFinalList;
-
-        private async Task<Book> FetchItemByIdAsync(Guid id)
-            => _fetchedItems.FirstOrDefault(x => x.Id == id);
+        private async Task<Book> FetchItemByIdAsync(Guid id) => _fetchedItems.FirstOrDefault(x => x.Id == id);
         
     }
 }
