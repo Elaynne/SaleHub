@@ -1,6 +1,7 @@
 using Application.UseCases.Users.CreateUser;
-using Application.UseCases.Users.GetUser;
-using Application.UseCases.Users.GetUsers;
+using Application.UseCases.Users.RetrieveUserById;
+using Application.UseCases.Users.RetrieveAllUsers;
+using Application.UseCases.Users.Login;
 using Application.UseCases.Users.UpdateUser;
 using Domain.Enums;
 using Domain.Models;
@@ -12,9 +13,7 @@ using SalesHub.WebApi.ActionFilterAtributes;
 namespace SalesHub.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-[Authorize(Roles = "Admin, Seller")]
-[RoleDiscoveryFilter]
+[Route("api/users")]
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -23,10 +22,22 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet(Name = "GetAllUsers")]
-    public async Task<ActionResult<IEnumerable<User>>> GetAll()
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> LoginAsync([FromBody] LoginInput loginInput)
     {
-        var input = new GetUsersInput()
+        var token = await _mediator.Send(loginInput).ConfigureAwait(false);
+        if (token is null)
+            return Unauthorized();
+        return Ok(token);
+    }
+
+    [HttpGet(Name = "GetAllUsers")]
+    [RoleDiscoveryFilter]
+    [Authorize(Roles = "Admin, Seller")]
+    public async Task<ActionResult<IEnumerable<Domain.Models.User>>> GetAll()
+    {
+        var input = new RetrieveAllUsersInput()
         {
             Role = GetUserRoleFromContext()
         };
@@ -37,9 +48,11 @@ public class UsersController : ControllerBase
 
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(Guid id)
+    [RoleDiscoveryFilter]
+    [Authorize(Roles = "Admin, Seller")]
+    public async Task<ActionResult<Domain.Models.User>> GetUser(Guid id)
     {
-        var input = new GetUserInput()
+        var input = new RetrieveUserByIdInput()
         { 
             Id = id,
             Role = GetUserRoleFromContext()
@@ -53,7 +66,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost(Name = "CreateUser")]
-    public async Task<ActionResult<User>> CreateUser(CreateUserInput input)
+    [RoleDiscoveryFilter]
+    [Authorize(Roles = "Admin, Seller")]
+    public async Task<ActionResult<Domain.Models.User>> CreateUser(CreateUserInput input)
     {
         if (GetUserRoleFromContext() == UserRole.Seller && input.Role != UserRole.Client)
             return Forbid();
@@ -64,7 +79,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateUser")]
-    public async Task<ActionResult<User>> UpdateUser(UpdateUserInput input)
+    [RoleDiscoveryFilter]
+    [Authorize(Roles = "Admin, Seller")]
+    public async Task<ActionResult<Domain.Models.User>> UpdateUser(UpdateUserInput input)
     {
         if (GetUserRoleFromContext() == UserRole.Seller && input.User.Role != UserRole.Client)
             return Forbid();

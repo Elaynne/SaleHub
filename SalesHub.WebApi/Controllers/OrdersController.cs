@@ -1,8 +1,7 @@
 ﻿using Application.UseCases.Orders.CreateOrder;
-using Application.UseCases.Orders.GetOrder;
-using Application.UseCases.Orders.GetOrders;
-using Application.UseCases.Orders.UpdateOrderStatus;
-using AutoMapper;
+using Application.UseCases.Orders.RetrieveOrderById;
+using Application.UseCases.Orders.RetrieveAllOrders;
+using Application.UseCases.Orders.CancelOrder;
 using Domain.Enums;
 using Domain.Models;
 using MediatR;
@@ -13,24 +12,21 @@ using SalesHub.WebApi.ActionFilterAtributes;
 namespace SalesHub.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [RoleDiscoveryFilter]
     public class OrdersController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
-        public OrdersController(IMediator mediator,
-            IMapper mapper)
+        public OrdersController(IMediator mediator)
         {
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         [HttpGet(Name = "GetAllOrders")]
         public async Task<ActionResult<IEnumerable<Order>>> GetAll()
         {
-            var input = new GetOrdersInput()
+            var input = new RetrieveAllOrdersInput()
             {
                 UserId = GetUserIdFromContext(),
                 UserRole = GetUserRoleFromContext(),
@@ -42,7 +38,7 @@ namespace SalesHub.WebApi.Controllers
         [HttpGet("{id}", Name = "GetOrder")]
         public async Task<ActionResult<Order>> GetOrder(Guid id)
         {
-            var order = await _mediator.Send(new GetOrderInput { 
+            var order = await _mediator.Send(new RetrieveOrderByIdInput { 
                 OrderId = id,
                 UserId = GetUserIdFromContext(),
                 UserRole = GetUserRoleFromContext()
@@ -55,12 +51,17 @@ namespace SalesHub.WebApi.Controllers
             return Ok(order);
         }
 
-        [HttpPost("send", Name = "CreateOrder")]
+        [HttpPost(Name = "CreateOrder")]
         [Authorize(Roles = "Admin, Seller")]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderViewModel viewModel)
         {
-            var input = _mapper.Map<CreateOrderInput>(viewModel);
-            input.UserId = GetUserIdFromContext();
+            var input = new CreateOrderInput()
+            {
+                SellerId = GetUserIdFromContext(),
+                ClientId = viewModel.CLientId,
+                OrderItems = viewModel.OrderItems,
+                CreatedAt = DateTime.Now
+            };
 
             var order = await _mediator.Send(input).ConfigureAwait(false);
 
@@ -70,12 +71,15 @@ namespace SalesHub.WebApi.Controllers
             return Ok(order);
         }
 
-        [HttpPut("OrderStatus",Name = "UpdateOrder")]
+        [HttpDelete("{id}", Name = "CancelOrder")]
         [Authorize(Roles = "Admin, Seller")]
-        public async Task<ActionResult<Order>> UpdateOrder(UpdateOrderStatusViewModel viewModel)
+        public async Task<ActionResult<Order>> CanceloOrder(Guid id)
         {
-            var input = _mapper.Map<UpdateOrderStatusInput>(viewModel);
-            input.UserId = GetUserIdFromContext();
+            var input = new CancelOrderInput()
+            {
+                OrderId = id,
+                UserId = GetUserIdFromContext()
+            };
 
             var order = await _mediator.Send(input).ConfigureAwait(false);
             return Ok(order);

@@ -1,24 +1,24 @@
-﻿using Application.UseCases.Auth;
-using Application.UseCases.Books.CreateBook;
+﻿using Application.UseCases.Books.CreateBook;
 using Application.UseCases.Books.DeleteBook;
-using Application.UseCases.Books.GetBook;
-using Application.UseCases.Books.GetBooks;
+using Application.UseCases.Books.RetrieveBookById;
+using Application.UseCases.Books.RetrieveAllBooks;
 using Application.UseCases.Books.UpdateBook;
 using Application.UseCases.Orders.CreateOrder;
-using Application.UseCases.Orders.GetOrder;
-using Application.UseCases.Orders.GetOrders;
-using Application.UseCases.Orders.UpdateOrderStatus;
+using Application.UseCases.Orders.RetrieveAllOrders;
+using Application.UseCases.Orders.RetrieveOrderById;
+using Application.UseCases.Orders.CancelOrder;
 using Application.UseCases.Users.CreateUser;
-using Application.UseCases.Users.GetUser;
-using Application.UseCases.Users.GetUsers;
+using Application.UseCases.Users.RetrieveUserById;
+using Application.UseCases.Users.RetrieveAllUsers;
+using Application.UseCases.Users.Login;
 using Application.UseCases.Users.UpdateUser;
 using Domain.Cache;
 using Domain.Models;
 using Domain.Repository.Interfaces;
 using Infrastructure.Cache;
-using Infrastructure.Repository.BookRepository;
-using Infrastructure.Repository.OrderRepository;
-using Infrastructure.Repository.User;
+using Infrastructure.Repositories.BookRepository;
+using Infrastructure.Repositories.OrderRepository;
+using Infrastructure.Repositories.User;
 
 namespace SalesHub.WebApi.DependencyInjection
 {
@@ -26,23 +26,23 @@ namespace SalesHub.WebApi.DependencyInjection
     {
         public static IServiceCollection AddUseCases(this IServiceCollection services)
         { 
-            services.AddScoped<ICreateUserUseCase, CreateUserUseCase> ();
-            services.AddScoped<IGetUserUseCase, GetUserUseCase>();
-            services.AddScoped<IGetUsersUseCase, GetUsersUseCase>();
-            services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+            services.AddScoped<ICreateUser, CreateUser> ();
+            services.AddScoped<IRetrieveUserById, RetrieveUserById>();
+            services.AddScoped<IRetrieveAllUsers, RetrieveAllUsers>();
+            services.AddScoped<IUpdateUser, UpdateUser>();
 
-            services.AddScoped<ILoginUseCase, LoginUseCase>();
+            services.AddScoped<ILogin, Login>();
 
-            services.AddScoped<ICreateBookUseCase, CreateBookUseCase>();
-            services.AddScoped<IGetBookUseCase, GetBookUseCase>();
-            services.AddScoped<IGetBooksUseCase, GetBooksUseCase>();
-            services.AddScoped<IUpdateBookUseCase, UpdateBookUseCase>();
-            services.AddScoped<IDeleteBookUseCase, DeleteBookUseCase>();
+            services.AddScoped<ICreateBook, CreateBook>();
+            services.AddScoped<IRetrieveBookById, RetrieveBookById>();
+            services.AddScoped<IRetrieveAllBooks, RetrieveAllBooks>();
+            services.AddScoped<IUpdateBook, UpdateBook>();
+            services.AddScoped<IDeleteBook, DeleteBook>();
 
-            services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
-            services.AddScoped<IGetOrdersUseCase, GetOrdersUseCase>();
-            services.AddScoped<IGetOrderUseCase, GetOrderUseCase>();
-            services.AddScoped<IUpdateOrderStatusUseCase, UpdateOrderStatusUseCase>();
+            services.AddScoped<ICreateOrder, CreateOrder>();
+            services.AddScoped<IRetrieveAllOrders, RetrieveAllOrders>();
+            services.AddScoped<IRetrieveOrderById, RetrieveOrderById>();
+            services.AddScoped<ICanceloOrder, CancelOrder>();
             return services;
 
         }

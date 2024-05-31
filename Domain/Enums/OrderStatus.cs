@@ -7,6 +7,6 @@ namespace Domain.Enums
         Processing,
         Shipped,
         Delivered,
-        Canceled
+        Cancelled
     }
 }
