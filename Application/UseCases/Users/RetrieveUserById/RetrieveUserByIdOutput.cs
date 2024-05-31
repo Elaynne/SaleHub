@@ -1,12 +1,17 @@
 ﻿using Domain.Enums;
-using Domain.Models;
-using MediatR;
 
 namespace Application.UseCases.Users.RetrieveUserById
 {
-    public class RetrieveUserByIdInput : IRequest<RetrieveUserByIdOutput>
+    public class RetrieveUserByIdOutput
     {
         public Guid Id { get; set; }
+
+        public string UserName { get; set; }
+
+        public string Email { get; set; }
+
         public UserRole Role { get; set; }
+
+        public bool Active { get; set; }
     }
 }

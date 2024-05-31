@@ -4,23 +4,36 @@ using Domain.Models;
 using Domain.Repository.Interfaces;
 using NSubstitute;
 using FluentAssertions;
+using Application.UseCases.Users.RetrieveUserById;
 
 namespace UnitTests.Application.UseCases.Users
 {
     public class RetrieveAllUsersTests
     {
         private IUserRepository _userRepository = Substitute.For<IUserRepository>();
-        private RetrieveAllUsers _retrieveAllUsersUseCase;
-        private List<User> _allUsers = new List<User>
+        private RetrieveAllUsers _getUsersUseCase;
+        private List<Domain.Models.User> _allUsers = new List<Domain.Models.User>
             {
-                new User { Id = Guid.NewGuid(), Role = UserRole.Admin },
-                new User { Id = Guid.NewGuid(), Role = UserRole.Seller },
-                new User { Id = Guid.NewGuid(), Role = UserRole.Client, Active = true }
+                new Domain.Models.User { Id = Guid.NewGuid(), Role = UserRole.Admin },
+                new Domain.Models.User { Id = Guid.NewGuid(), Role = UserRole.Seller },
+                new Domain.Models.User { Id = Guid.NewGuid(), Role = UserRole.Client, Active = true }
             };
+
+        private List<global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput> _allUsersOutput = new List<global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput>();
         public RetrieveAllUsersTests()
         {
             _userRepository.GetAllUsersAsync().Returns(_allUsers);
-            _retrieveAllUsersUseCase = new RetrieveAllUsers(_userRepository);
+            foreach (var user in _allUsers)
+            {
+                _allUsersOutput.Add(new global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput()
+                {
+                    Id = user.Id,
+                    Role = user.Role,
+                    Active = user.Active
+                });
+            };
+
+            _getUsersUseCase = new RetrieveAllUsers(_userRepository);
         }
 
         [Fact]
@@ -28,9 +41,9 @@ namespace UnitTests.Application.UseCases.Users
         {
             var request = new RetrieveAllUsersInput { Role = UserRole.Admin };
 
-            var result = await _retrieveAllUsersUseCase.Handle(request, CancellationToken.None);
+            var result = await _getUsersUseCase.Handle(request, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(_allUsers);
+            result.Should().BeEquivalentTo(_allUsersOutput);
         }
 
         [Fact]
@@ -38,9 +51,9 @@ namespace UnitTests.Application.UseCases.Users
         {
             var request = new RetrieveAllUsersInput { Role = UserRole.Seller };
 
-            var result = await _retrieveAllUsersUseCase.Handle(request, CancellationToken.None);
+            var result = await _getUsersUseCase.Handle(request, CancellationToken.None);
 
-            result.Should().ContainSingle().Which.Should().BeEquivalentTo(_allUsers.Last());
+            result.Should().ContainSingle().Which.Should().BeEquivalentTo(_allUsersOutput.Last());
         }
 
         [Fact]
@@ -48,7 +61,7 @@ namespace UnitTests.Application.UseCases.Users
         {
             var request = new RetrieveAllUsersInput { Role = UserRole.Client }; 
 
-            var result = await _retrieveAllUsersUseCase.Handle(request, CancellationToken.None);
+            var result = await _getUsersUseCase.Handle(request, CancellationToken.None);
 
             result.Should().BeEmpty();
         }

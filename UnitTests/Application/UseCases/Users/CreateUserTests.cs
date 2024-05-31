@@ -4,6 +4,7 @@ using NSubstitute;
 using FluentAssertions;
 using NSubstitute.ExceptionExtensions;
 using Application.UseCases.Users.CreateUser;
+using Application.UseCases.Users.RetrieveUserById;
 
 namespace UnitTests.Application.UseCases.Users
 {
@@ -15,7 +16,8 @@ namespace UnitTests.Application.UseCases.Users
         {
             _request = new CreateUserInput { 
                 UserName = "ElaynneT", 
-                Email = "elaynne@example.com" 
+                Email = "elaynne@example.com" ,
+                Password = "111"
             };
         }
         [Fact]
@@ -24,7 +26,16 @@ namespace UnitTests.Application.UseCases.Users
             var user = new User { 
                 Id = Guid.NewGuid(), 
                 UserName = _request.UserName, 
-                Email = _request.Email 
+                Email = _request.Email,
+                Password = _request.Password,
+                Active = true
+            };
+
+            var outPut = new RetrieveUserByIdOutput() { 
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                Active = user.Active
             };
 
             _userRepository.AddUserAsync(Arg.Any<User>()).Returns(user);
@@ -32,7 +43,7 @@ namespace UnitTests.Application.UseCases.Users
 
             var result = await createUserUseCase.Handle(_request, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(user);
+            result.Should().BeEquivalentTo(outPut);
         }
 
         [Fact]

@@ -17,20 +17,28 @@ namespace Application.UseCases.Users.RetrieveUserById
             _logger = logger;
         }
 
-        public async Task<User?> Handle(RetrieveUserByIdInput request, CancellationToken cancellationToken)
+        public async Task<RetrieveUserByIdOutput?> Handle(RetrieveUserByIdInput request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Getting user {UserId}", request.Id);
 
             var user = await _userRepository.GetUserByIdAsync(request.Id);
 
+            var response = new RetrieveUserByIdOutput() { 
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                Active = user.Active,
+                Role = user.Role
+
+            };
             return request.Role switch
             {
-                UserRole.Admin => user,
-                UserRole.Seller => IsActiveClient(user) ? user : null,
+                UserRole.Admin => response,
+                UserRole.Seller => IsActiveClient(user) ? response : null,
                 _ => null
             };
         }
-        private bool IsActiveClient(User user) =>
+        private bool IsActiveClient(Domain.Models.User user) =>
             user.Role == UserRole.Client && user.Active == true;
     }
 }

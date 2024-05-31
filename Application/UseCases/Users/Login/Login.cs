@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Domain.Enums;
 using Domain.Models;
 using Microsoft.Extensions.Caching.Memory;
+using Application.UseCases.Users.Encryption;
 
 namespace Application.UseCases.Users.Login
 {
@@ -48,7 +49,7 @@ namespace Application.UseCases.Users.Login
         {
             var users = await _userRepository.GetAllUsersAsync();
             var currentUser = users
-                .Where(x => x.UserName == login.Username && x.Password == login.Password)
+                .Where(x => x.UserName == login.Username && x.Password == Encrypt.HashPassword(login.Password))
                 .FirstOrDefault();
             return currentUser != null ? (currentUser.Role.ToString(), currentUser.Id.ToString()) : null;
         }
@@ -81,6 +82,7 @@ namespace Application.UseCases.Users.Login
             var userMock = GetUsersMock();
             foreach (var user in userMock)
             {
+                user.Password = Encrypt.HashPassword(user.Password);
                 _userRepository.AddUserAsync(user);
             }
 

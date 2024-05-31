@@ -1,5 +1,6 @@
 ﻿
-using Domain.Models;
+using Application.UseCases.Users.Encryption;
+using Application.UseCases.Users.RetrieveUserById;
 using Domain.Repository.Interfaces;
 
 namespace Application.UseCases.Users.UpdateUser
@@ -13,9 +14,19 @@ namespace Application.UseCases.Users.UpdateUser
             _userRepository = userRepository;
         }
 
-        public async Task<User> Handle(UpdateUserInput request, CancellationToken cancellationToken)
+        public async Task<RetrieveUserByIdOutput> Handle(UpdateUserInput request, CancellationToken cancellationToken)
         {
-            return await _userRepository.UpdateUserAsync(request.User);
+            request.User.Password = Encrypt.HashPassword(request.User.Password);
+            var response = await _userRepository.UpdateUserAsync(request.User);
+
+            return new RetrieveUserByIdOutput()
+            { 
+                Id = response.Id,
+                UserName = response.UserName,
+                Email = response.Email,
+                Role = response.Role,
+                Active = response.Active
+            };
         }
 
     }

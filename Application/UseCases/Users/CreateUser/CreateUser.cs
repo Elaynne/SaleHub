@@ -1,4 +1,6 @@
-﻿using Domain.Models;
+﻿using Application.UseCases.Users.Encryption;
+using Application.UseCases.Users.RetrieveUserById;
+using Domain.Models;
 using Domain.Repository.Interfaces;
 
 namespace Application.UseCases.Users.CreateUser
@@ -12,19 +14,27 @@ namespace Application.UseCases.Users.CreateUser
             _userRepository = userRepository;
         }
 
-        public async Task<User> Handle(CreateUserInput request, CancellationToken cancellationToken)
+        public async Task<RetrieveUserByIdOutput> Handle(CreateUserInput request, CancellationToken cancellationToken)
         {
             var user = new User()
             {
                 Id = Guid.NewGuid(),
                 UserName= request.UserName,
                 Email = request.Email,
-                Password = request.Password,
+                Password = Encrypt.HashPassword(request.Password),
                 Active = true,
                 Role = request.Role
             };
             
-            return await _userRepository.AddUserAsync(user);
+            var response = await _userRepository.AddUserAsync(user);
+            return new RetrieveUserByIdOutput()
+            {
+                Id = response.Id,
+                UserName = response.UserName,
+                Email = response.Email,
+                Active = true,
+                Role = response.Role
+            };
         }
     }
 

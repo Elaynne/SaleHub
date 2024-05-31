@@ -4,16 +4,21 @@ using NSubstitute;
 using FluentAssertions;
 using Application.UseCases.Users.UpdateUser;
 using NSubstitute.ExceptionExtensions;
+using Application.UseCases.Users.RetrieveUserById;
 
 namespace UnitTests.Application.UseCases.Users
 {
     public class UpdateUserUseCaseTests
     {
         private IUserRepository _userRepository = Substitute.For<IUserRepository>();
-        private User _user = new User { Id = Guid.NewGuid(), UserName = "ElaynneT" };
+        private User _user = new User { Id = Guid.NewGuid(), UserName = "ElaynneT", Password = "123" };
+        private RetrieveUserByIdOutput _userOutput = new RetrieveUserByIdOutput();
         private UpdateUserInput _request = new UpdateUserInput();
         public UpdateUserUseCaseTests()
         {
+            _userOutput.Id = _user.Id; ;
+            _userOutput.UserName = _user.UserName;
+            
             _request = new UpdateUserInput { User = _user };
         }
         [Fact]
@@ -24,7 +29,7 @@ namespace UnitTests.Application.UseCases.Users
 
             var result = await updateUserUseCase.Handle(_request, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(_user);
+            result.Should().BeEquivalentTo(_userOutput);
         }
 
         [Fact]

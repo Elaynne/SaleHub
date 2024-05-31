@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
     [HttpGet(Name = "GetAllUsers")]
     [RoleDiscoveryFilter]
     [Authorize(Roles = "Admin, Seller")]
-    public async Task<ActionResult<IEnumerable<User>>> GetAll()
+    public async Task<ActionResult<IEnumerable<Domain.Models.User>>> GetAll()
     {
         var input = new RetrieveAllUsersInput()
         {
@@ -50,7 +50,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     [RoleDiscoveryFilter]
     [Authorize(Roles = "Admin, Seller")]
-    public async Task<ActionResult<User>> GetUser(Guid id)
+    public async Task<ActionResult<Domain.Models.User>> GetUser(Guid id)
     {
         var input = new RetrieveUserByIdInput()
         { 
@@ -68,7 +68,7 @@ public class UsersController : ControllerBase
     [HttpPost(Name = "CreateUser")]
     [RoleDiscoveryFilter]
     [Authorize(Roles = "Admin, Seller")]
-    public async Task<ActionResult<User>> CreateUser(CreateUserInput input)
+    public async Task<ActionResult<Domain.Models.User>> CreateUser(CreateUserInput input)
     {
         if (GetUserRoleFromContext() == UserRole.Seller && input.Role != UserRole.Client)
             return Forbid();
@@ -81,7 +81,7 @@ public class UsersController : ControllerBase
     [HttpPut(Name = "UpdateUser")]
     [RoleDiscoveryFilter]
     [Authorize(Roles = "Admin, Seller")]
-    public async Task<ActionResult<User>> UpdateUser(UpdateUserInput input)
+    public async Task<ActionResult<Domain.Models.User>> UpdateUser(UpdateUserInput input)
     {
         if (GetUserRoleFromContext() == UserRole.Seller && input.User.Role != UserRole.Client)
             return Forbid();

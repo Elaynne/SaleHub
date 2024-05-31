@@ -21,33 +21,35 @@ namespace UnitTests.Application.UseCases.Users
         [Fact]
         public async Task Handle_AdminRole_ReturnsUser()
         {
-            var user = new User { Id = _userId, Role = UserRole.Admin };
+            var user = new Domain.Models.User { Id = _userId, Role = UserRole.Admin };
             _userRepository.GetUserByIdAsync(_userId).Returns(user);
+            var response = new global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput() { Id = _userId, Role = user.Role };
 
             var request = new RetrieveUserByIdInput { Id = _userId, Role = UserRole.Admin };
 
             var result = await _retrieveUserByIdUseCase.Handle(request, CancellationToken.None);
 
-            result.Should().Be(user);
+            result.Should().BeEquivalentTo(response);
         }
 
         [Fact]
         public async Task Handle_SellerRoleWithActiveClient_ReturnsUser()
         {
-            var user = new User { Id = _userId, Role = UserRole.Client, Active = true };
+            var user = new Domain.Models.User { Id = _userId, Role = UserRole.Client, Active = true };
             _userRepository.GetUserByIdAsync(_userId).Returns(user);
+            var response = new global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput() { Id = _userId, Role = user.Role, Active = user.Active };
 
             var request = new RetrieveUserByIdInput { Id = _userId, Role = UserRole.Seller };
 
             var result = await _retrieveUserByIdUseCase.Handle(request, CancellationToken.None);
 
-            result.Should().Be(user);
+            result.Should().BeEquivalentTo(response);
         }
 
         [Fact]
         public async Task Handle_SellerRoleWithInactiveClient_ReturnsNull()
         {
-            var user = new User { Id = _userId, Role = UserRole.Client, Active = false };
+            var user = new Domain.Models.User { Id = _userId, Role = UserRole.Client, Active = false };
             _userRepository.GetUserByIdAsync(_userId).Returns(user);
 
             var request = new RetrieveUserByIdInput { Id = _userId, Role = UserRole.Seller };
@@ -60,7 +62,7 @@ namespace UnitTests.Application.UseCases.Users
         [Fact]
         public async Task Handle_ClientRole_ReturnsNull()
         {
-            var user = new User { Id = _userId, Role = UserRole.Client, Active = true };
+            var user = new Domain.Models.User { Id = _userId, Role = UserRole.Client, Active = true };
             _userRepository.GetUserByIdAsync(_userId).Returns(user);
 
             var request = new RetrieveUserByIdInput { Id = _userId, Role = UserRole.Client }; 

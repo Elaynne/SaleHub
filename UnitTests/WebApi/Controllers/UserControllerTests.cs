@@ -30,7 +30,7 @@ namespace UnitTests.WebApi.Controllers
         [Fact]
         public async Task GetAll_ReturnsOkResult_WithUsers()
         {
-            var users = new List<User> { new User() };
+            var users = new List<global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput> { new global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput() };
             _mediator.Send(Arg.Any<RetrieveAllUsersInput>()).Returns(users);
 
             var result = await _controller.GetAll();
@@ -44,7 +44,7 @@ namespace UnitTests.WebApi.Controllers
         public async Task GetUser_WithValidId_ReturnsOkResult_WithUser()
         {
             var userId = Guid.NewGuid();
-            var user = new User { Id = userId };
+            var user = new global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput { Id = userId };
             _mediator.Send(Arg.Any<RetrieveUserByIdInput>()).Returns(user);
 
             var result = await _controller.GetUser(userId);
@@ -59,7 +59,7 @@ namespace UnitTests.WebApi.Controllers
         public async Task GetUser_WithInvalidId_ReturnsNotFoundResult()
         {
             var userId = Guid.NewGuid();
-            _mediator.Send(Arg.Any<RetrieveUserByIdInput>()).Returns((User)null);
+            _mediator.Send(Arg.Any<RetrieveUserByIdInput>()).Returns<global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput>((global::Application.UseCases.Users.RetrieveUserById.RetrieveUserByIdOutput)null);
 
             var result = await _controller.GetUser(userId);
 
@@ -89,7 +89,7 @@ namespace UnitTests.WebApi.Controllers
         [Fact]
         public async Task UpdateUser_WithUserRoleSellerAndInputUserRoleNotClient_ReturnsForbidResult()
         {
-            var input = new UpdateUserInput { User = new User { Role = UserRole.Seller } };
+            var input = new UpdateUserInput { User = new Domain.Models.User { Role = UserRole.Seller } };
             _controller.ControllerContext.HttpContext.Items["userRole"] = UserRole.Seller;
 
             var result = await _controller.UpdateUser(input);
@@ -100,8 +100,8 @@ namespace UnitTests.WebApi.Controllers
         [Fact]
         public async Task UpdateUser_WithValidInput_ReturnsOkObjectResult()
         {
-            var input = new UpdateUserInput { User = new User { Role = UserRole.Client } };
-            var updatedUser = new User { Id = Guid.NewGuid(), Role = UserRole.Client };
+            var input = new UpdateUserInput { User = new Domain.Models.User { Role = UserRole.Client } };
+            var updatedUser = new RetrieveUserByIdOutput { Id = Guid.NewGuid(), Role = UserRole.Client };
             _mediator.Send(input).Returns(updatedUser);
 
             _controller.ControllerContext.HttpContext.Items["userRole"] = UserRole.Admin;
