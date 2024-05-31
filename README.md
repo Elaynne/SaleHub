@@ -67,8 +67,11 @@ Run the tests using dotnet test.
 # How to send order
 
 This solution has a mock of 3 users:
+
 1 Admin: name user-admin password 11111111
+
 2 Seller: name user-seller password 22222222
+
 3 Client: name user-client password 33333333
 
 Mock of 10 books of JRR Tolking
