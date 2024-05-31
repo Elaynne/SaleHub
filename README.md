@@ -155,9 +155,9 @@ Output
 }
 ```
 
-4 - Get Orders will return an empty list on the 1st time, before you populate as you wish.
+6 - Get Orders will return an empty list on the 1st time, before you populate as you wish.
 
-5 - Delete Order to cancel order by id. You can only cancel orders with Pending status. ALl orders are created as Pending, assuming it could be processed asynchronously by another application.
+7 - Delete Order to cancel order by id. You can only cancel orders with Pending status. ALl orders are created as Pending, assuming it could be processed asynchronously by another application.
 
 OrderStatus [**Pending, Processing, Shipped, Delivered, Cancelled**]
 
